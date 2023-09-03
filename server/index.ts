@@ -95,6 +95,9 @@ const adminJS = new AdminJS({
         }, {
             resource: { model: getModelByName('Role'), client: prisma },
             options: {},
+        }, {
+            resource: { model: getModelByName('NoteImage'), client: prisma },
+            options: {},
         }
     ]
 })
