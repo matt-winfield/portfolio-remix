@@ -1,3 +1,6 @@
+import AdminJSExpress from '@adminjs/express';
+import { Database, Resource, getModelByName } from '@adminjs/prisma';
+import { PrismaClient } from '@prisma/client';
 import {
     createRequestHandler as _createRequestHandler,
     type RequestHandler,
@@ -9,6 +12,7 @@ import {
 } from '@remix-run/node';
 import { wrapExpressCreateRequestHandler } from '@sentry/remix';
 import address from 'address';
+import AdminJS from 'adminjs';
 import chalk from 'chalk';
 import chokidar from 'chokidar';
 import closeWithGrace from 'close-with-grace';
@@ -69,6 +73,37 @@ app.use((req, res, next) => {
 });
 
 app.use(compression());
+
+
+// AdminJS
+const prisma = new PrismaClient();
+
+AdminJS.registerAdapter({ Resource, Database })
+
+const adminJS = new AdminJS({
+    rootPath: '/admin/cms',
+    resources: [
+        {
+            resource: { model: getModelByName('User'), client: prisma },
+            options: {},
+        }, {
+            resource: { model: getModelByName('Note'), client: prisma },
+            options: {},
+        }, {
+            resource: { model: getModelByName('Permission'), client: prisma },
+            options: {},
+        }, {
+            resource: { model: getModelByName('Role'), client: prisma },
+            options: {},
+        }
+    ]
+})
+
+// Rebuilds the CMS in development mode
+adminJS.watch();
+
+const adminRouter = AdminJSExpress.buildRouter(adminJS)
+app.use(adminJS.options.rootPath, adminRouter)
 
 // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
 app.disable('x-powered-by');
@@ -207,8 +242,8 @@ const server = app.listen(portToUse, () => {
         desiredPort === portToUse
             ? desiredPort
             : addy && typeof addy === 'object'
-            ? addy.port
-            : 0;
+                ? addy.port
+                : 0;
 
     if (portUsed !== desiredPort) {
         console.warn(
