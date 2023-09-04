@@ -28,6 +28,7 @@ import { fileURLToPath } from 'url';
 
 // @ts-ignore - this file may not exist if you haven't built yet, but it will
 // definitely exist by the time the dev or prod server actually runs.
+import { Components, componentLoader } from '#adminJS/components.ts';
 import * as remixBuild from '#build/index.js';
 
 installGlobals();
@@ -82,6 +83,7 @@ AdminJS.registerAdapter({ Resource, Database })
 
 const adminJS = new AdminJS({
     rootPath: '/admin/cms',
+    componentLoader,
     resources: [
         {
             resource: { model: getModelByName('User'), client: prisma },
@@ -97,7 +99,17 @@ const adminJS = new AdminJS({
             options: {},
         }, {
             resource: { model: getModelByName('NoteImage'), client: prisma },
-            options: {},
+            options: {
+                properties: {
+                    blob: {
+                        type: 'bytes',
+                        components: {
+                            show: Components.ImageBlob,
+                            list: Components.ImageBlob
+                        }
+                    }
+                }
+            },
         }
     ]
 })
