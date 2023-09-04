@@ -29,6 +29,7 @@ import { fileURLToPath } from 'url';
 // @ts-ignore - this file may not exist if you haven't built yet, but it will
 // definitely exist by the time the dev or prod server actually runs.
 import { Components, componentLoader } from '#adminJS/components.ts';
+import { verifyUserPassword } from '#app/utils/auth.server.ts';
 import * as remixBuild from '#build/index.js';
 
 installGlobals();
@@ -81,8 +82,60 @@ const prisma = new PrismaClient();
 
 AdminJS.registerAdapter({ Resource, Database })
 
+const authenticate = async (username: string, password: string) => {
+    const result = await verifyUserPassword({ username }, password);
+
+    if (result) {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: result.id
+            },
+            select: {
+                id: true,
+                email: true,
+                username: true,
+                roles: {
+                    select: {
+                        name: true,
+                        permissions: {
+                            select: {
+                                id: true,
+                                entity: true,
+                                action: true,
+                                access: true
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
+        if (!user) return null;
+
+        const userData = {
+            id: user.id,
+            email: user.email,
+            username: user.username,
+            roles: user.roles.map(role => role.name),
+            permissions: user.roles.reduce((acc, role) => {
+                role.permissions.forEach(permission => {
+                    if (!acc.find(p => p.id === permission.id)) acc.push(permission);
+                })
+                return acc;
+            }, [] as { id: string, entity: string, action: string, access: string }[])
+        }
+
+        if (!userData.permissions.some(permission => permission.entity === 'cms' && permission.action === 'login')) return null;
+        return userData;
+    }
+
+    return null;
+}
+
 const adminJS = new AdminJS({
     rootPath: '/admin/cms',
+    loginPath: '/admin/cms/login',
+    logoutPath: '/admin/cms/logout',
     componentLoader,
     resources: [
         {
@@ -111,13 +164,25 @@ const adminJS = new AdminJS({
                 }
             },
         }
-    ]
+    ],
+    locale: {
+        language: 'en',
+        translations: {
+            en: {
+                "components.Login.properties.email": 'Username',
+            }
+        }
+    }
 })
 
 // Rebuilds the CMS in development mode
 adminJS.watch();
 
-const adminRouter = AdminJSExpress.buildRouter(adminJS)
+const adminRouter = AdminJSExpress.buildAuthenticatedRouter(adminJS, {
+    authenticate,
+    cookieName: 'adminjs',
+    cookiePassword: 'sessionsecret',
+})
 app.use(adminJS.options.rootPath, adminRouter)
 
 // http://expressjs.com/en/advanced/best-practice-security.html#at-a-minimum-disable-x-powered-by-header
@@ -282,6 +347,7 @@ const server = app.listen(portToUse, () => {
         `
 ${chalk.bold('Local:')}            ${chalk.cyan(localUrl)}
 ${lanUrl ? `${chalk.bold('On Your Network:')}  ${chalk.cyan(lanUrl)}` : ''}
+${chalk.bold('Admin:')}            ${chalk.cyan(`${localUrl}${adminJS.options.rootPath}`)}
 ${chalk.bold('Press Ctrl+C to stop')}
 		`.trim(),
     );

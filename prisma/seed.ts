@@ -32,6 +32,19 @@ async function seed() {
             }
         }
     }
+    const cmsEntities = ['cms'];
+    const cmsActions = ['login'];
+    const cmsAccesses = ['any'] as const;
+    for (const entity of cmsEntities) {
+        for (const action of cmsActions) {
+            for (const access of cmsAccesses) {
+                await prisma.permission.create({
+                    data: { entity, action, access },
+                });
+            }
+        }
+    }
+
     console.timeEnd('🔑 Created permissions...');
 
     console.time('👑 Created roles...');
