@@ -1,5 +1,5 @@
-import { dataProvider } from 'ra-data-simple-prisma';
 import { Admin, EditGuesser, Resource, ShowGuesser } from 'react-admin';
+import { dataProvider } from '../providers/data-provider.tsx';
 import { NoteList } from './note-list.tsx';
 import { PermissionList } from './permission-list.tsx';
 import { NoteimageEdit } from './resources/note-image/note-image-edit.tsx';

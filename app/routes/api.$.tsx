@@ -1,5 +1,6 @@
 import { prisma } from '#app/utils/db.server.ts';
 import { requireUserWithRole } from '#app/utils/permissions.ts';
+import { type Prisma } from '@prisma/client';
 import { json, type DataFunctionArgs } from '@remix-run/server-runtime';
 import { defaultHandler, type RaPayload } from 'ra-data-simple-prisma';
 
@@ -49,11 +50,37 @@ const mapImageProperties = (data: any) => {
     return output;
 };
 
+const includeUserRoles: Prisma.UserDefaultArgs = {
+    include: {
+        roles: true,
+    },
+};
+
+const includeNoteImages: Prisma.NoteDefaultArgs = {
+    include: {
+        images: true,
+    },
+};
+
 export const loader = async ({ request }: DataFunctionArgs) => {
     await requireUserWithRole(request, 'admin');
     const body = (await request.json()) as RaPayload;
 
-    const result = await defaultHandler(body, prisma);
+    let options;
+    switch (body.resource) {
+        case 'User':
+            options = includeUserRoles;
+            break;
+        case 'Note':
+            options = includeNoteImages;
+            break;
+    }
+
+    const result = await defaultHandler(body, prisma, {
+        getOne: options,
+        getList: options,
+        getMany: options,
+    });
 
     const transformedResult = mapImageProperties(result);
 
