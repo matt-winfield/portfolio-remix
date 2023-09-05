@@ -7,7 +7,7 @@ import {
     TextInput,
 } from 'react-admin';
 
-export const NoteimageEdit = () => (
+export const NoteImageEdit = () => (
     <Edit>
         <SimpleForm>
             <TextInput source="id" />
