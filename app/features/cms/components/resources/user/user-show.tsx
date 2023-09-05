@@ -2,17 +2,21 @@ import {
     ArrayField,
     Datagrid,
     EmailField,
-    List,
     ReferenceField,
+    Show,
+    SimpleShowLayout,
     TextField,
 } from 'react-admin';
 
-export const UserList = () => (
-    <List>
-        <Datagrid rowClick="show">
+export const UserShow = () => (
+    <Show>
+        <SimpleShowLayout>
+            <TextField source="id" />
             <EmailField source="email" />
             <TextField source="username" />
             <TextField source="name" />
+            <TextField source="createdAt" />
+            <TextField source="updatedAt" />
             <ArrayField source="roles">
                 <Datagrid>
                     <ReferenceField reference="Role" source="id">
@@ -20,6 +24,6 @@ export const UserList = () => (
                     </ReferenceField>
                 </Datagrid>
             </ArrayField>
-        </Datagrid>
-    </List>
+        </SimpleShowLayout>
+    </Show>
 );

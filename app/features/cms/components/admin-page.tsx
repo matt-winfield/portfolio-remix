@@ -6,33 +6,39 @@ import { NoteImageShow } from './resources/note-image/note-image-show.tsx';
 import { NoteList } from './resources/note/note-list.tsx';
 import { PermissionList } from './resources/permission/permission-list.tsx';
 import { RoleList } from './resources/role/role-list.tsx';
+import { UserEdit } from './resources/user/user-edit.tsx';
 import { UserList } from './resources/user/user-list.tsx';
+import { UserShow } from './resources/user/user-show.tsx';
 
 const App = () => (
     <Admin basename="/admin/cms" dataProvider={dataProvider('/api')}>
         <Resource
             name="User"
             list={UserList}
-            show={ShowGuesser}
-            edit={EditGuesser}
+            show={UserShow}
+            edit={UserEdit}
+            recordRepresentation="username"
         />
         <Resource
             name="Note"
             list={NoteList}
             show={ShowGuesser}
             edit={EditGuesser}
+            recordRepresentation="title"
         />
         <Resource
             name="Role"
             list={RoleList}
             show={ShowGuesser}
             edit={EditGuesser}
+            recordRepresentation="name"
         />
         <Resource
             name="Permission"
             list={PermissionList}
             show={ShowGuesser}
             edit={EditGuesser}
+            recordRepresentation="name"
         />
         <Resource
             name="NoteImage"

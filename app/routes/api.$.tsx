@@ -52,13 +52,21 @@ const mapImageProperties = (data: any) => {
 
 const includeUserRoles: Prisma.UserDefaultArgs = {
     include: {
-        roles: true,
+        roles: {
+            select: {
+                id: true,
+            },
+        },
     },
 };
 
 const includeNoteImages: Prisma.NoteDefaultArgs = {
     include: {
-        images: true,
+        images: {
+            select: {
+                id: true,
+            },
+        },
     },
 };
 
