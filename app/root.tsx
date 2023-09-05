@@ -247,46 +247,51 @@ function App() {
     const theme = useTheme();
     const matches = useMatches();
     const isOnSearchPage = matches.find((m) => m.id === 'routes/users+/index');
+    const isOnCmsPage = matches.find((m) => m.id === 'routes/admin_.cms.$');
 
     return (
         <Document nonce={nonce} theme={theme} env={data.ENV}>
             <div className="flex h-screen flex-col justify-between">
-                <header className="container py-6">
-                    <nav className="flex items-center justify-between">
-                        <Link to="/">
-                            <div className="font-light">epic</div>
-                            <div className="font-bold">notes</div>
-                        </Link>
-                        {isOnSearchPage ? null : (
-                            <div className="ml-auto max-w-sm flex-1 pr-10">
-                                <SearchBar status="idle" />
-                            </div>
-                        )}
-                        <div className="flex items-center gap-10">
-                            {user ? (
-                                <UserDropdown />
-                            ) : (
-                                <Button asChild variant="default" size="sm">
-                                    <Link to="/login">Log In</Link>
-                                </Button>
+                {!isOnCmsPage && (
+                    <header className="container py-6">
+                        <nav className="flex items-center justify-between">
+                            <Link to="/">
+                                <div className="font-light">epic</div>
+                                <div className="font-bold">notes</div>
+                            </Link>
+                            {isOnSearchPage ? null : (
+                                <div className="ml-auto max-w-sm flex-1 pr-10">
+                                    <SearchBar status="idle" />
+                                </div>
                             )}
-                        </div>
-                    </nav>
-                </header>
+                            <div className="flex items-center gap-10">
+                                {user ? (
+                                    <UserDropdown />
+                                ) : (
+                                    <Button asChild variant="default" size="sm">
+                                        <Link to="/login">Log In</Link>
+                                    </Button>
+                                )}
+                            </div>
+                        </nav>
+                    </header>
+                )}
 
                 <div className="flex-1">
                     <Outlet />
                 </div>
 
-                <div className="container flex justify-between pb-5">
-                    <Link to="/">
-                        <div className="font-light">epic</div>
-                        <div className="font-bold">notes</div>
-                    </Link>
-                    <ThemeSwitch
-                        userPreference={data.requestInfo.userPrefs.theme}
-                    />
-                </div>
+                {!isOnCmsPage && (
+                    <div className="container flex justify-between pb-5">
+                        <Link to="/">
+                            <div className="font-light">epic</div>
+                            <div className="font-bold">notes</div>
+                        </Link>
+                        <ThemeSwitch
+                            userPreference={data.requestInfo.userPrefs.theme}
+                        />
+                    </div>
+                )}
             </div>
             <Confetti id={data.confettiId} />
             <EpicToaster toast={data.toast} />
