@@ -1,19 +1,20 @@
 import {
-    Datagrid,
     ImageField,
-    List,
     ReferenceArrayField,
     ReferenceField,
+    Show,
+    SimpleShowLayout,
     SingleFieldList,
     TextField,
 } from 'react-admin';
 
-export const NoteList = () => (
-    <List>
-        <Datagrid rowClick="show">
+export const NoteShow = () => (
+    <Show>
+        <SimpleShowLayout>
+            <TextField source="id" />
             <TextField source="title" />
             <TextField source="content" />
-            <ReferenceField source="ownerId" reference="User" link="show" />
+            <ReferenceField source="ownerId" reference="User" />
             <ReferenceArrayField
                 label="Images"
                 reference="noteImage"
@@ -23,6 +24,6 @@ export const NoteList = () => (
                     <ImageField source="src" />
                 </SingleFieldList>
             </ReferenceArrayField>
-        </Datagrid>
-    </List>
+        </SimpleShowLayout>
+    </Show>
 );

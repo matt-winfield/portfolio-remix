@@ -13,8 +13,6 @@ export const NoteImageShow = () => (
             <TextField source="altText" />
             <TextField source="contentType" />
             <ImageField source="src" />
-            <TextField source="createdAt" />
-            <TextField source="updatedAt" />
             <ReferenceField source="noteId" reference="Note" />
         </SimpleShowLayout>
     </Show>

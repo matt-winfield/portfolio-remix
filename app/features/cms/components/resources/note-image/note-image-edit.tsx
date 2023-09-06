@@ -10,7 +10,7 @@ import {
 export const NoteImageEdit = () => (
     <Edit>
         <SimpleForm>
-            <TextInput source="id" />
+            <TextInput source="id" disabled />
             <TextInput source="altText" />
             <TextInput source="contentType" />
             <ImageInput source="src">

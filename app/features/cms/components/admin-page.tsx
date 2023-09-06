@@ -3,7 +3,9 @@ import { dataProvider } from '../providers/data-provider.tsx';
 import { NoteImageEdit } from './resources/note-image/note-image-edit.tsx';
 import { NoteImageList } from './resources/note-image/note-image-list.tsx';
 import { NoteImageShow } from './resources/note-image/note-image-show.tsx';
+import { NoteEdit } from './resources/note/note-edit.tsx';
 import { NoteList } from './resources/note/note-list.tsx';
+import { NoteShow } from './resources/note/note-show.tsx';
 import { PermissionList } from './resources/permission/permission-list.tsx';
 import { RoleList } from './resources/role/role-list.tsx';
 import { UserEdit } from './resources/user/user-edit.tsx';
@@ -17,13 +19,13 @@ const App = () => (
             list={UserList}
             show={UserShow}
             edit={UserEdit}
-            recordRepresentation="username"
+            recordRepresentation={(user) => user.username ?? user.email}
         />
         <Resource
             name="Note"
             list={NoteList}
-            show={ShowGuesser}
-            edit={EditGuesser}
+            show={NoteShow}
+            edit={NoteEdit}
             recordRepresentation="title"
         />
         <Resource

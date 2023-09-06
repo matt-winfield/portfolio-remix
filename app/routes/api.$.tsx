@@ -1,7 +1,7 @@
+import { noteHandler } from '#app/features/cms/resourceHandlers/noteHandler.tsx';
 import { userHandler } from '#app/features/cms/resourceHandlers/userHandler.tsx';
 import { prisma } from '#app/utils/db.server.ts';
 import { requireUserWithRole } from '#app/utils/permissions.ts';
-import { type Prisma } from '@prisma/client';
 import { json, type DataFunctionArgs } from '@remix-run/server-runtime';
 import { defaultHandler, type RaPayload } from 'ra-data-simple-prisma';
 
@@ -51,20 +51,6 @@ const mapImageProperties = (data: any) => {
     return output;
 };
 
-const getNoteOptions = (request: RaPayload) => {
-    const includeNoteImages: Prisma.NoteDefaultArgs = {
-        include: {
-            images: {
-                select: {
-                    id: true,
-                },
-            },
-        },
-    };
-
-    return includeNoteImages;
-};
-
 export const loader = async ({ request }: DataFunctionArgs) => {
     await requireUserWithRole(request, 'admin');
     const body = (await request.json()) as RaPayload;
@@ -75,9 +61,10 @@ export const loader = async ({ request }: DataFunctionArgs) => {
             const result = await userHandler(body);
             return json(result);
         }
-        case 'Note':
-            options = getNoteOptions(body);
-            break;
+        case 'Note': {
+            const result = await noteHandler(body);
+            return json(result);
+        }
     }
 
     const result = await defaultHandler(body, prisma, {
