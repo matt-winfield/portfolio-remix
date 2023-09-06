@@ -1,9 +1,10 @@
 import {
-    ArrayField,
+    ChipField,
     Datagrid,
     EmailField,
     List,
-    ReferenceField,
+    ReferenceArrayField,
+    SingleFieldList,
     TextField,
 } from 'react-admin';
 
@@ -13,13 +14,15 @@ export const UserList = () => (
             <EmailField source="email" />
             <TextField source="username" />
             <TextField source="name" />
-            <ArrayField source="roles">
-                <Datagrid>
-                    <ReferenceField reference="Role" source="id">
-                        <TextField source="name" />
-                    </ReferenceField>
-                </Datagrid>
-            </ArrayField>
+            <ReferenceArrayField
+                label="Roles"
+                reference="role"
+                source="roleIds"
+            >
+                <SingleFieldList>
+                    <ChipField source="name" />
+                </SingleFieldList>
+            </ReferenceArrayField>
         </Datagrid>
     </List>
 );

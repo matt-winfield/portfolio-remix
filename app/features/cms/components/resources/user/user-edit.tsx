@@ -1,9 +1,8 @@
 import {
-    ArrayInput,
+    AutocompleteArrayInput,
     Edit,
-    ReferenceInput,
+    ReferenceArrayInput,
     SimpleForm,
-    SimpleFormIterator,
     TextInput,
 } from 'react-admin';
 
@@ -14,11 +13,13 @@ export const UserEdit = () => (
             <TextInput source="email" />
             <TextInput source="username" />
             <TextInput source="name" />
-            <ArrayInput source="roles">
-                <SimpleFormIterator>
-                    <ReferenceInput reference="Role" source="id" />
-                </SimpleFormIterator>
-            </ArrayInput>
+            <ReferenceArrayInput
+                label="Roles"
+                reference="role"
+                source="roleIds"
+            >
+                <AutocompleteArrayInput optionText={'name'} />
+            </ReferenceArrayInput>
         </SimpleForm>
     </Edit>
 );

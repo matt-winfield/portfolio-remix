@@ -1,3 +1,4 @@
+import { userHandler } from '#app/features/cms/resourceHandlers/userHandler.tsx';
 import { prisma } from '#app/utils/db.server.ts';
 import { requireUserWithRole } from '#app/utils/permissions.ts';
 import { type Prisma } from '@prisma/client';
@@ -50,37 +51,32 @@ const mapImageProperties = (data: any) => {
     return output;
 };
 
-const includeUserRoles: Prisma.UserDefaultArgs = {
-    include: {
-        roles: {
-            select: {
-                id: true,
+const getNoteOptions = (request: RaPayload) => {
+    const includeNoteImages: Prisma.NoteDefaultArgs = {
+        include: {
+            images: {
+                select: {
+                    id: true,
+                },
             },
         },
-    },
-};
+    };
 
-const includeNoteImages: Prisma.NoteDefaultArgs = {
-    include: {
-        images: {
-            select: {
-                id: true,
-            },
-        },
-    },
+    return includeNoteImages;
 };
 
 export const loader = async ({ request }: DataFunctionArgs) => {
     await requireUserWithRole(request, 'admin');
     const body = (await request.json()) as RaPayload;
 
-    let options;
+    let options = undefined;
     switch (body.resource) {
-        case 'User':
-            options = includeUserRoles;
-            break;
+        case 'User': {
+            const result = await userHandler(body);
+            return json(result);
+        }
         case 'Note':
-            options = includeNoteImages;
+            options = getNoteOptions(body);
             break;
     }
 
@@ -88,6 +84,9 @@ export const loader = async ({ request }: DataFunctionArgs) => {
         getOne: options,
         getList: options,
         getMany: options,
+        update: options,
+        create: options,
+        getManyReference: options,
     });
 
     const transformedResult = mapImageProperties(result);
