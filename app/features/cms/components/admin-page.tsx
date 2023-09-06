@@ -1,4 +1,11 @@
-import { Admin, EditGuesser, Resource, ShowGuesser } from 'react-admin';
+import {
+    Admin,
+    EditGuesser,
+    Resource,
+    ShowGuesser,
+    defaultDarkTheme,
+    defaultTheme,
+} from 'react-admin';
 import { dataProvider } from '../providers/data-provider.tsx';
 import { NoteImageEdit } from './resources/note-image/note-image-edit.tsx';
 import { NoteImageList } from './resources/note-image/note-image-list.tsx';
@@ -12,8 +19,41 @@ import { UserEdit } from './resources/user/user-edit.tsx';
 import { UserList } from './resources/user/user-list.tsx';
 import { UserShow } from './resources/user/user-show.tsx';
 
+const lightTheme = {
+    ...defaultTheme,
+    components: {
+        ...defaultTheme.components,
+        MuiChip: {
+            styleOverrides: {
+                root: {
+                    height: 'fit-content',
+                },
+            },
+        },
+    },
+};
+
+const darkTheme = {
+    ...defaultDarkTheme,
+    components: {
+        ...defaultDarkTheme.components,
+        MuiChip: {
+            styleOverrides: {
+                root: {
+                    height: 'fit-content',
+                },
+            },
+        },
+    },
+};
+
 const App = () => (
-    <Admin basename="/admin/cms" dataProvider={dataProvider('/api')}>
+    <Admin
+        basename="/admin/cms"
+        dataProvider={dataProvider('/api')}
+        theme={lightTheme}
+        darkTheme={darkTheme}
+    >
         <Resource
             name="User"
             list={UserList}

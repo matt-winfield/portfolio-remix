@@ -1,9 +1,9 @@
 import {
-    AutocompleteArrayInput,
     DateInput,
     Edit,
     ReferenceArrayInput,
     ReferenceInput,
+    SelectArrayInput,
     SimpleForm,
     TextInput,
 } from 'react-admin';
@@ -22,7 +22,15 @@ export const NoteEdit = () => (
                 reference="noteImage"
                 source="imageIds"
             >
-                <AutocompleteArrayInput optionText={'altText'} />
+                <SelectArrayInput
+                    optionText={(record) => (
+                        <img
+                            src={record.src}
+                            alt={record.altText}
+                            style={{ width: '100px' }}
+                        />
+                    )}
+                />
             </ReferenceArrayInput>
         </SimpleForm>
     </Edit>
