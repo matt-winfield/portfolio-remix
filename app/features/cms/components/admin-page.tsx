@@ -1,3 +1,4 @@
+import { useOptionalUser } from '#app/utils/user.ts';
 import {
     Admin,
     EditGuesser,
@@ -6,6 +7,7 @@ import {
     defaultDarkTheme,
     defaultTheme,
 } from 'react-admin';
+import { authProvider } from '../providers/auth-provider.tsx';
 import { dataProvider } from '../providers/data-provider.tsx';
 import { NoteImageCreate } from './resources/note-image/note-image-create.tsx';
 import { NoteImageEdit } from './resources/note-image/note-image-edit.tsx';
@@ -49,50 +51,55 @@ const darkTheme = {
     },
 };
 
-const App = () => (
-    <Admin
-        basename="/admin/cms"
-        dataProvider={dataProvider('/api')}
-        theme={lightTheme}
-        darkTheme={darkTheme}
-    >
-        <Resource
-            name="User"
-            list={UserList}
-            show={UserShow}
-            edit={UserEdit}
-            create={UserCreate}
-            recordRepresentation={(user) => user.username ?? user.email}
-        />
-        <Resource
-            name="Note"
-            list={NoteList}
-            show={NoteShow}
-            edit={NoteEdit}
-            recordRepresentation="title"
-        />
-        <Resource
-            name="Role"
-            list={RoleList}
-            show={ShowGuesser}
-            edit={EditGuesser}
-            recordRepresentation="name"
-        />
-        <Resource
-            name="Permission"
-            list={PermissionList}
-            show={ShowGuesser}
-            edit={EditGuesser}
-            recordRepresentation="name"
-        />
-        <Resource
-            name="NoteImage"
-            list={NoteImageList}
-            show={NoteImageShow}
-            edit={NoteImageEdit}
-            create={NoteImageCreate}
-        />
-    </Admin>
-);
+const App = () => {
+    const user = useOptionalUser();
+
+    return (
+        <Admin
+            basename="/admin/cms"
+            dataProvider={dataProvider('/api')}
+            authProvider={authProvider(user)}
+            theme={lightTheme}
+            darkTheme={darkTheme}
+        >
+            <Resource
+                name="User"
+                list={UserList}
+                show={UserShow}
+                edit={UserEdit}
+                create={UserCreate}
+                recordRepresentation={(user) => user.username ?? user.email}
+            />
+            <Resource
+                name="Note"
+                list={NoteList}
+                show={NoteShow}
+                edit={NoteEdit}
+                recordRepresentation="title"
+            />
+            <Resource
+                name="Role"
+                list={RoleList}
+                show={ShowGuesser}
+                edit={EditGuesser}
+                recordRepresentation="name"
+            />
+            <Resource
+                name="Permission"
+                list={PermissionList}
+                show={ShowGuesser}
+                edit={EditGuesser}
+                recordRepresentation="name"
+            />
+            <Resource
+                name="NoteImage"
+                list={NoteImageList}
+                show={NoteImageShow}
+                edit={NoteImageEdit}
+                create={NoteImageCreate}
+            />
+        </Admin>
+    );
+};
 
 export default App;
