@@ -1,4 +1,5 @@
 import { noteHandler } from '#app/features/cms/resourceHandlers/noteHandler.tsx';
+import { noteImageHandler } from '#app/features/cms/resourceHandlers/noteImageHandler.tsx';
 import { userHandler } from '#app/features/cms/resourceHandlers/userHandler.tsx';
 import { prisma } from '#app/utils/db.server.ts';
 import { requireUserWithRole } from '#app/utils/permissions.ts';
@@ -56,13 +57,17 @@ export const loader = async ({ request }: DataFunctionArgs) => {
     const body = (await request.json()) as RaPayload;
 
     let options = undefined;
-    switch (body.resource) {
-        case 'User': {
+    switch (body.resource.toLowerCase()) {
+        case 'user': {
             const result = await userHandler(body);
             return json(result);
         }
-        case 'Note': {
+        case 'note': {
             const result = await noteHandler(body);
+            return json(result);
+        }
+        case 'noteimage': {
+            const result = await noteImageHandler(body);
             return json(result);
         }
     }
@@ -76,9 +81,7 @@ export const loader = async ({ request }: DataFunctionArgs) => {
         getManyReference: options,
     });
 
-    const transformedResult = mapImageProperties(result);
-
-    return json(transformedResult);
+    return json(result);
 };
 
 export const action = loader;

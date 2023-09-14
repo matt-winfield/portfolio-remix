@@ -1,5 +1,5 @@
 import {
-    Edit,
+    Create,
     ImageField,
     ImageInput,
     ReferenceInput,
@@ -7,16 +7,14 @@ import {
     TextInput,
 } from 'react-admin';
 
-export const NoteImageEdit = () => (
-    <Edit>
+export const NoteImageCreate = () => (
+    <Create>
         <SimpleForm>
-            <TextInput source="id" disabled />
             <TextInput source="altText" />
-            <TextInput source="contentType" disabled />
             <ImageInput source="src">
                 <ImageField source="src" />
             </ImageInput>
             <ReferenceInput source="noteId" reference="Note" />
         </SimpleForm>
-    </Edit>
+    </Create>
 );

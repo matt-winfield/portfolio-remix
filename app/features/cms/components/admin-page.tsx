@@ -7,6 +7,7 @@ import {
     defaultTheme,
 } from 'react-admin';
 import { dataProvider } from '../providers/data-provider.tsx';
+import { NoteImageCreate } from './resources/note-image/note-image-create.tsx';
 import { NoteImageEdit } from './resources/note-image/note-image-edit.tsx';
 import { NoteImageList } from './resources/note-image/note-image-list.tsx';
 import { NoteImageShow } from './resources/note-image/note-image-show.tsx';
@@ -87,6 +88,7 @@ const App = () => (
             list={NoteImageList}
             show={NoteImageShow}
             edit={NoteImageEdit}
+            create={NoteImageCreate}
         />
     </Admin>
 );
