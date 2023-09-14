@@ -8,7 +8,7 @@ import {
 } from 'react-admin';
 
 export const NoteImageEdit = () => (
-    <Edit>
+    <Edit mutationMode="optimistic">
         <SimpleForm>
             <TextInput source="id" disabled />
             <TextInput source="altText" />

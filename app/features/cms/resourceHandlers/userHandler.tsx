@@ -1,4 +1,6 @@
+import { resetUserPassword } from '#app/utils/auth.server.ts';
 import { prisma } from '#app/utils/db.server.ts';
+import { PasswordSchema } from '#app/utils/user-validation.ts';
 import {
     createHandler,
     defaultHandler,
@@ -42,6 +44,16 @@ export const userHandler = async (body: RaPayload) => {
             });
         }
         case 'update': {
+            const username = body.params.data.username as string | undefined;
+            const password = body.params.data.password as string | undefined;
+            if (username && password && password.trim().length > 0) {
+                const validationResult = PasswordSchema.safeParse(password);
+                if (validationResult.success) {
+                    await resetUserPassword({ username, password });
+                }
+                delete body.params.data.password;
+            }
+
             return await updateHandler(body, prisma.user, {
                 set: {
                     roleIds: {

@@ -1,20 +1,17 @@
 import {
     AutocompleteArrayInput,
-    Edit,
-    PasswordInput,
+    Create,
     ReferenceArrayInput,
     SimpleForm,
     TextInput,
 } from 'react-admin';
 
-export const UserEdit = () => (
-    <Edit mutationMode="optimistic">
+export const UserCreate = () => (
+    <Create>
         <SimpleForm>
-            <TextInput source="id" disabled />
             <TextInput source="email" />
             <TextInput source="username" />
             <TextInput source="name" />
-            <PasswordInput source="password" />
             <ReferenceArrayInput
                 label="Roles"
                 reference="role"
@@ -23,5 +20,5 @@ export const UserEdit = () => (
                 <AutocompleteArrayInput optionText={'name'} />
             </ReferenceArrayInput>
         </SimpleForm>
-    </Edit>
+    </Create>
 );

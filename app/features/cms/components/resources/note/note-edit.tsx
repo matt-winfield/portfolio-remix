@@ -9,7 +9,7 @@ import {
 } from 'react-admin';
 
 export const NoteEdit = () => (
-    <Edit>
+    <Edit mutationMode="optimistic">
         <SimpleForm>
             <TextInput source="id" disabled />
             <TextInput source="title" />

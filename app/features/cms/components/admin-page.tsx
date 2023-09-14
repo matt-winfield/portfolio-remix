@@ -16,6 +16,7 @@ import { NoteList } from './resources/note/note-list.tsx';
 import { NoteShow } from './resources/note/note-show.tsx';
 import { PermissionList } from './resources/permission/permission-list.tsx';
 import { RoleList } from './resources/role/role-list.tsx';
+import { UserCreate } from './resources/user/user-create.tsx';
 import { UserEdit } from './resources/user/user-edit.tsx';
 import { UserList } from './resources/user/user-list.tsx';
 import { UserShow } from './resources/user/user-show.tsx';
@@ -60,6 +61,7 @@ const App = () => (
             list={UserList}
             show={UserShow}
             edit={UserEdit}
+            create={UserCreate}
             recordRepresentation={(user) => user.username ?? user.email}
         />
         <Resource

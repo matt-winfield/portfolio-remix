@@ -103,8 +103,13 @@ export async function resetUserPassword({
         where: { username },
         data: {
             password: {
-                update: {
-                    hash: hashedPassword,
+                upsert: {
+                    create: {
+                        hash: hashedPassword,
+                    },
+                    update: {
+                        hash: hashedPassword,
+                    },
                 },
             },
         },
