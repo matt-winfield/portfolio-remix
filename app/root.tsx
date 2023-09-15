@@ -29,7 +29,6 @@ import { z } from 'zod';
 import { Confetti } from './components/confetti.tsx';
 import { GeneralErrorBoundary } from './components/error-boundary.tsx';
 import { ErrorList } from './components/forms.tsx';
-import { SearchBar } from './components/search-bar.tsx';
 import { EpicToaster } from './components/toaster.tsx';
 import { Button } from './components/ui/button.tsx';
 import {
@@ -246,24 +245,20 @@ function App() {
     const user = useOptionalUser();
     const theme = useTheme();
     const matches = useMatches();
-    const isOnSearchPage = matches.find((m) => m.id === 'routes/users+/index');
     const isOnCmsPage = matches.find((m) => m.id === 'routes/admin_.cms.$');
 
     return (
         <Document nonce={nonce} theme={theme} env={data.ENV}>
             <div className="flex h-screen flex-col justify-between">
                 {!isOnCmsPage && (
-                    <header className="container py-6">
-                        <nav className="flex items-center justify-between">
-                            <Link to="/">
-                                <div className="font-light">epic</div>
-                                <div className="font-bold">notes</div>
-                            </Link>
-                            {isOnSearchPage ? null : (
-                                <div className="ml-auto max-w-sm flex-1 pr-10">
-                                    <SearchBar status="idle" />
-                                </div>
-                            )}
+                    <header className="fixed z-10 flex w-screen items-center py-6">
+                        <nav className="container flex flex-1 items-center justify-between">
+                            <ThemeSwitch
+                                userPreference={
+                                    data.requestInfo.userPrefs.theme
+                                }
+                            />
+                            <div></div>
                             <div className="flex items-center gap-10">
                                 {user ? (
                                     <UserDropdown />
@@ -280,18 +275,6 @@ function App() {
                 <div className="flex-1">
                     <Outlet />
                 </div>
-
-                {!isOnCmsPage && (
-                    <div className="container flex justify-between pb-5">
-                        <Link to="/">
-                            <div className="font-light">epic</div>
-                            <div className="font-bold">notes</div>
-                        </Link>
-                        <ThemeSwitch
-                            userPreference={data.requestInfo.userPrefs.theme}
-                        />
-                    </div>
-                )}
             </div>
             <Confetti id={data.confettiId} />
             <EpicToaster toast={data.toast} />
