@@ -270,10 +270,12 @@ function App() {
                     <Outlet />
                 </div>
                 {!user && (
-                    <div className="container flex items-center justify-around p-2">
-                        <Link to="/login" className="text-muted-foreground">
-                            Log In
-                        </Link>
+                    <div className="fixed bottom-0 z-10 flex w-screen justify-center p-2">
+                        <div className="container flex items-center justify-around">
+                            <Link to="/login" className="text-muted-foreground">
+                                Log In
+                            </Link>
+                        </div>
                     </div>
                 )}
             </div>

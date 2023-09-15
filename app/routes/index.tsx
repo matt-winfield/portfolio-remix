@@ -24,7 +24,7 @@ export default function Index() {
     useEffect(() => {
         if (prefersReducedMotion) return;
 
-        animate(x1, 60, {
+        animate(x1, 55, {
             repeat: Infinity,
             repeatType: 'reverse',
             ease: easeInOut,
