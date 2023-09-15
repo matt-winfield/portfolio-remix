@@ -20,6 +20,14 @@ export const clientHints = {
         getValueCode: `Intl.DateTimeFormat().resolvedOptions().timeZone`,
         fallback: 'UTC',
     },
+    reducedMotion: {
+        cookieName: 'CH-prefers-reduced-motion',
+        getValueCode: `window.matchMedia('(prefers-reduced-motion: reduce)').matches`,
+        fallback: false,
+        transform(value: string) {
+            return value === 'true';
+        },
+    },
     // add other hints here
 };
 
@@ -56,7 +64,9 @@ export function getHints(request?: Request) {
         (acc, [name, hint]) => {
             const hintName = name as ClientHintNames;
             if ('transform' in hint) {
+                // @ts-expect-error - this is fine
                 acc[hintName] = hint.transform(
+                    // @ts-expect-error - this is fine
                     getCookieValue(cookieString, hintName) ?? hint.fallback,
                 );
             } else {

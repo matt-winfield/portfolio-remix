@@ -260,13 +260,7 @@ function App() {
                             />
                             <div></div>
                             <div className="flex items-center gap-10">
-                                {user ? (
-                                    <UserDropdown />
-                                ) : (
-                                    <Button asChild variant="default" size="sm">
-                                        <Link to="/login">Log In</Link>
-                                    </Button>
-                                )}
+                                {user && <UserDropdown />}
                             </div>
                         </nav>
                     </header>
@@ -275,6 +269,13 @@ function App() {
                 <div className="flex-1">
                     <Outlet />
                 </div>
+                {!user && (
+                    <div className="container flex items-center justify-around p-2">
+                        <Link to="/login" className="text-muted-foreground">
+                            Log In
+                        </Link>
+                    </div>
+                )}
             </div>
             <Confetti id={data.confettiId} />
             <EpicToaster toast={data.toast} />
