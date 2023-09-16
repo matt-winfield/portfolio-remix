@@ -51,9 +51,9 @@ export const Hero = () => {
     }, [animate, x1, y1, x2, y2, prefersReducedMotion]);
 
     return (
-        <div className="relative min-h-screen">
+        <div>
             <motion.div
-                className="absolute left-0 top-0 -z-10 min-h-screen w-full"
+                className="fixed left-0 top-0 -z-10 min-h-screen w-full"
                 ref={scope}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -61,12 +61,12 @@ export const Hero = () => {
                     background,
                 }}
             />
-            <div className="container flex min-h-screen items-center justify-center sm:justify-start">
-                <div className="flex flex-col items-center sm:items-start">
-                    <div className="text-5xl font-bold sm:text-7xl">
+            <div className="container flex min-h-screen items-center justify-center md:justify-start">
+                <div className="flex flex-col items-center md:items-start">
+                    <div className="text-center text-5xl font-bold md:text-7xl">
                         Matt Winfield
                     </div>
-                    <div className="text-2xl text-muted-foreground sm:text-3xl">
+                    <div className="text-center text-2xl text-muted-foreground md:text-3xl">
                         Software Developer
                     </div>
                 </div>

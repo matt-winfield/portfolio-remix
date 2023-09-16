@@ -47,6 +47,7 @@ import { getConfetti } from './utils/confetti.server.ts';
 import { prisma } from './utils/db.server.ts';
 import { getEnv } from './utils/env.server.ts';
 import {
+    cn,
     combineHeaders,
     getDomainUrl,
     getUserImgSrc,
@@ -246,12 +247,18 @@ function App() {
     const theme = useTheme();
     const matches = useMatches();
     const isOnCmsPage = matches.find((m) => m.id === 'routes/admin_.cms.$');
+    const isOnIndexPage = matches.find((m) => m.id === 'routes/index');
 
     return (
         <Document nonce={nonce} theme={theme} env={data.ENV}>
             <div className="flex h-screen flex-col justify-between">
                 {!isOnCmsPage && (
-                    <header className="fixed z-10 flex w-screen items-center py-6">
+                    <header
+                        className={cn(
+                            isOnIndexPage && 'fixed',
+                            'z-10 flex w-screen items-center py-6',
+                        )}
+                    >
                         <nav className="container flex flex-1 items-center justify-between">
                             <ThemeSwitch
                                 userPreference={
@@ -260,7 +267,16 @@ function App() {
                             />
                             <div></div>
                             <div className="flex items-center gap-10">
-                                {user && <UserDropdown />}
+                                {user ? (
+                                    <UserDropdown />
+                                ) : (
+                                    <Link
+                                        to="/login"
+                                        className="text-muted-foreground"
+                                    >
+                                        Log In
+                                    </Link>
+                                )}
                             </div>
                         </nav>
                     </header>
@@ -269,15 +285,6 @@ function App() {
                 <div className="flex-1">
                     <Outlet />
                 </div>
-                {!user && (
-                    <div className="fixed bottom-0 z-10 flex w-screen justify-center p-2">
-                        <div className="container flex items-center justify-around">
-                            <Link to="/login" className="text-muted-foreground">
-                                Log In
-                            </Link>
-                        </div>
-                    </div>
-                )}
             </div>
             <Confetti id={data.confettiId} />
             <EpicToaster toast={data.toast} />
