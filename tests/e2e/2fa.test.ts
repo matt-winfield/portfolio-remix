@@ -51,5 +51,7 @@ test('Users can add 2FA to their account and use it when logging in', async ({
 
     await page.getByRole('button', { name: /submit/i }).click();
 
+    await page.goto('/projects');
+
     await expect(page.getByRole('link', { name: user.name })).toBeVisible();
 });
