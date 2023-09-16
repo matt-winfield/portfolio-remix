@@ -9,6 +9,10 @@ import {
 } from 'react-admin';
 import { authProvider } from '../providers/auth-provider.tsx';
 import { dataProvider } from '../providers/data-provider.tsx';
+import { ImageCreate } from './resources/image/image-create.tsx';
+import { ImageEdit } from './resources/image/image-edit.tsx';
+import { ImageList } from './resources/image/image-list.tsx';
+import { ImageShow } from './resources/image/image-show.tsx';
 import { NoteImageCreate } from './resources/note-image/note-image-create.tsx';
 import { NoteImageEdit } from './resources/note-image/note-image-edit.tsx';
 import { NoteImageList } from './resources/note-image/note-image-list.tsx';
@@ -22,6 +26,10 @@ import { ProjectEdit } from './resources/project/project-edit.tsx';
 import { ProjectList } from './resources/project/project-list.tsx';
 import { ProjectShow } from './resources/project/project-show.tsx';
 import { RoleList } from './resources/role/role-list.tsx';
+import { TechnologyCreate } from './resources/technology/technology-create.tsx';
+import { TechnologyEdit } from './resources/technology/technology-edit.tsx';
+import { TechnologyList } from './resources/technology/technology-list.tsx';
+import { TechnologyShow } from './resources/technology/technology-show.tsx';
 import { UserCreate } from './resources/user/user-create.tsx';
 import { UserEdit } from './resources/user/user-edit.tsx';
 import { UserList } from './resources/user/user-list.tsx';
@@ -80,6 +88,21 @@ const App = () => {
                 show={ProjectShow}
                 edit={ProjectEdit}
                 create={ProjectCreate}
+                recordRepresentation="name"
+            />
+            <Resource
+                name="Image"
+                list={ImageList}
+                show={ImageShow}
+                edit={ImageEdit}
+                create={ImageCreate}
+            />
+            <Resource
+                name="Technology"
+                list={TechnologyList}
+                edit={TechnologyEdit}
+                show={TechnologyShow}
+                create={TechnologyCreate}
                 recordRepresentation="name"
             />
             <Resource

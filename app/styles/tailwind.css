@@ -10,7 +10,7 @@
         /* prefixed with foreground because it should look good on the background */
         --foreground-danger: 345 82.7% 40.8%;
 
-        --background: 0 0% 100%;
+        --background: 0 0% 94%;
         --foreground: 222.2 84% 4.9%;
 
         --muted: 210 40% 96.1%;
@@ -56,7 +56,7 @@
         --popover: 222.2 10% 4.9%;
         --popover-foreground: 210 40% 98%;
 
-        --card: 222.2 0% 4.9%;
+        --card: 222.2 0% 10.5%;
         --card-foreground: 210 40% 98%;
 
         --border: 217.2 32.6% 17.5%;

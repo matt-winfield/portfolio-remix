@@ -4,6 +4,8 @@ import { Link, useLoaderData } from '@remix-run/react';
 import { json } from '@remix-run/server-runtime';
 import { motion } from 'framer-motion';
 
+const fallbackImagePath = '/img/placeholder.jpg';
+
 export const loader = async () => {
     const projects = await prisma.project.findMany({
         select: {
@@ -14,6 +16,7 @@ export const loader = async () => {
             images: {
                 select: {
                     id: true,
+                    altText: true,
                 },
             },
         },
@@ -27,7 +30,10 @@ export default function Projects() {
 
     return (
         <div className="container">
-            <motion.div className="relative w-fit text-5xl" layoutId="projects">
+            <motion.div
+                className="relative mb-5 w-fit text-5xl"
+                layoutId="projects"
+            >
                 Projects
                 <motion.div className="absolute -bottom-1 h-[2px] w-full bg-accent-foreground" />
             </motion.div>
@@ -35,13 +41,30 @@ export default function Projects() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
+                className="flex flex-wrap items-center justify-center gap-2"
             >
                 {data.projects.map((project) => (
                     <div
                         key={project.id}
-                        className="flex flex-col items-center"
+                        className="flex w-fit flex-col items-center rounded-md bg-card px-3 py-2 transition hover:scale-110"
                     >
-                        <div className="my-2 text-3xl">{project.name}</div>
+                        <motion.div
+                            className="my-2 w-fit text-3xl"
+                            layoutId={`${project.id}-title`}
+                        >
+                            {project.name}
+                        </motion.div>
+                        <div className="my-1 h-60">
+                            <img
+                                className="max-h-full max-w-full"
+                                src={
+                                    project.images.length > 0
+                                        ? `/resources/images/${project.images[0].id}`
+                                        : fallbackImagePath
+                                }
+                                alt={project.images[0]?.altText ?? project.name}
+                            />
+                        </div>
                         <div className="my-1 px-2">
                             <Button className="text-xl" asChild>
                                 <Link to={`/projects/${project.id}`}>

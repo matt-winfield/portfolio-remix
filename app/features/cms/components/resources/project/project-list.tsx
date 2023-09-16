@@ -4,7 +4,6 @@ import {
     ImageField,
     List,
     ReferenceArrayField,
-    ReferenceField,
     RichTextField,
     SingleFieldList,
     TextField,
@@ -19,7 +18,6 @@ export const ProjectList = () => (
             <UrlField source="codeUrl" />
             <UrlField source="demoUrl" />
 
-            <ReferenceField source="ownerId" reference="User" link="show" />
             <ReferenceArrayField
                 label="Images"
                 reference="image"

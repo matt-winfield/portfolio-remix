@@ -283,7 +283,10 @@ function App() {
 
                 <div className="flex-1">{outlet}</div>
                 {!isOnIndexPage && !isOnCmsPage && (
-                    <div className="flex items-center justify-center">
+                    <div className="flex items-center justify-center gap-2">
+                        <ThemeSwitch
+                            userPreference={data.requestInfo.userPrefs.theme}
+                        />
                         {user ? (
                             <UserDropdown />
                         ) : (

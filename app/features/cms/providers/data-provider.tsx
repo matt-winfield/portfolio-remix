@@ -68,4 +68,17 @@ export const dataProvider = (apiUrl: string, options?: Options) =>
                 return data;
             },
         },
+        {
+            resource: 'Image',
+            beforeSave: async (data) => {
+                const image = data.src.rawFile as File;
+
+                if (image) {
+                    const base64 = await convertFileToBase64(image);
+                    data.src = base64;
+                }
+
+                return data;
+            },
+        },
     ]);
