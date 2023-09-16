@@ -1,6 +1,6 @@
 import fsExtra from 'fs-extra';
 import path from 'node:path';
-import { afterAll, afterEach, beforeAll } from 'vitest';
+import { beforeAll } from 'vitest';
 import { BASE_DATABASE_PATH } from './global-setup.ts';
 
 const databaseFile = `./tests/prisma/data.${
@@ -15,13 +15,16 @@ beforeAll(async () => {
 
 // we *must* use dynamic imports here so the process.env.DATABASE_URL is set
 // befor prisma is imported and initialized
-afterEach(async () => {
-    const { prisma } = await import('#app/utils/db.server.ts');
-    await prisma.user.deleteMany();
-});
+// afterEach(async () => {
+//     const { prisma } = await import('#app/utils/db.server.ts')
+//     await prisma.user.deleteMany()
+//     await prisma.verification.deleteMany()
+//     await prisma.role.deleteMany()
+//     await prisma.permission.deleteMany()
+// })
 
-afterAll(async () => {
-    const { prisma } = await import('#app/utils/db.server.ts');
-    prisma.$disconnect();
-    await fsExtra.remove(databasePath);
-});
+// afterAll(async () => {
+//     const { prisma } = await import('#app/utils/db.server.ts')
+//     prisma.$disconnect()
+//     await fsExtra.remove(databasePath)
+// })

@@ -14,6 +14,7 @@ test('String returns itself', () => {
 });
 
 test('undefined falls back to Unknown', () => {
+    consoleError.mockImplementation(() => {});
     expect(getErrorMessage(undefined)).toBe('Unknown Error');
     expect(consoleError).toHaveBeenCalledWith(
         'Unable to get error message for error',
