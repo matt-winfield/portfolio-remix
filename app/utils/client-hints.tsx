@@ -9,8 +9,8 @@ import { useRequestInfo } from './request-info.ts';
 export const clientHints = {
     theme: {
         cookieName: 'CH-prefers-color-scheme',
-        getValueCode: `window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'`,
-        fallback: 'light',
+        getValueCode: `window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'`,
+        fallback: 'dark',
         transform(value: string) {
             return value === 'dark' ? 'dark' : 'light';
         },
