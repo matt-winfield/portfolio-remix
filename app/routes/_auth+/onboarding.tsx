@@ -148,7 +148,7 @@ export async function handleVerification({
 }
 
 export const meta: V2_MetaFunction = () => {
-    return [{ title: 'Setup Epic Notes Account' }];
+    return [{ title: 'Setup Matt Winfield Portfolio Account' }];
 };
 
 export default function SignupRoute() {

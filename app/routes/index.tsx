@@ -1,10 +1,7 @@
 import { Hero } from '#app/features/hero/components/hero.tsx';
-import { type V2_MetaFunction } from '@remix-run/node';
 import { Link } from '@remix-run/react';
 import { motion } from 'framer-motion';
 import { forwardRef, type ComponentProps } from 'react';
-
-export const meta: V2_MetaFunction = () => [{ title: 'Epic Notes' }];
 
 const StyledLink = forwardRef<HTMLAnchorElement, ComponentProps<typeof Link>>(
     ({ className, ...props }, ref) => (

@@ -370,7 +370,7 @@ export default function LoginPage() {
 }
 
 export const meta: V2_MetaFunction = () => {
-    return [{ title: 'Login to Epic Notes' }];
+    return [{ title: 'Login to Matt Winfield Portfolio' }];
 };
 
 export function ErrorBoundary() {

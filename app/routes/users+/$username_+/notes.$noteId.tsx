@@ -214,7 +214,7 @@ export const meta: V2_MetaFunction<
             ? data?.note.content.slice(0, 97) + '...'
             : 'No content';
     return [
-        { title: `${noteTitle} | ${displayName}'s Notes | Epic Notes` },
+        { title: `${noteTitle} | ${displayName}'s Notes | Matt Winfield` },
         {
             name: 'description',
             content: noteContentsSummary,
