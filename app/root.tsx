@@ -39,6 +39,7 @@ import {
     DropdownMenuTrigger,
 } from './components/ui/dropdown-menu.tsx';
 import { Icon, href as iconsHref } from './components/ui/icon.tsx';
+import { NavMenu } from './features/nav-menu/components/nav-menu.tsx';
 import fontStylestylesheetUrl from './styles/font.css';
 import tailwindStylesheetUrl from './styles/tailwind.css';
 import { authenticator, getUserId } from './utils/auth.server.ts';
@@ -265,29 +266,33 @@ function App() {
                         )}
                     >
                         <nav className="container flex flex-1 items-center justify-between">
-                            <ThemeSwitch
-                                userPreference={
-                                    data.requestInfo.userPrefs.theme
-                                }
-                            />
-                            <div></div>
-                            <div className="flex items-center gap-10">
-                                {user ? (
-                                    <UserDropdown />
-                                ) : (
-                                    <Link
-                                        to="/login"
-                                        className="text-muted-foreground"
-                                    >
-                                        Log In
-                                    </Link>
-                                )}
+                            {isOnIndexPage && (
+                                <ThemeSwitch
+                                    userPreference={
+                                        data.requestInfo.userPrefs.theme
+                                    }
+                                />
+                            )}
+                            <div className="mx-3 min-w-0 flex-1">
+                                {!isOnIndexPage && <NavMenu />}
                             </div>
+                            <div></div>
                         </nav>
                     </header>
                 )}
 
                 <div className="flex-1">{outlet}</div>
+                {!isOnIndexPage && !isOnCmsPage && (
+                    <div className="flex items-center justify-center">
+                        {user ? (
+                            <UserDropdown />
+                        ) : (
+                            <Link to="/login" className="text-muted-foreground">
+                                Log In
+                            </Link>
+                        )}
+                    </div>
+                )}
             </div>
             <Confetti id={data.confettiId} />
             <EpicToaster toast={data.toast} />
