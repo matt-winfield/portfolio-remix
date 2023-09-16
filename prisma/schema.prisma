@@ -32,6 +32,34 @@ model User {
   connections Connection[]
 }
 
+model Project {
+  id            String @id @default(cuid())
+  name          String
+  description   String?
+  technologies  Technology[]
+  codeUrl       String?
+  demoUrl       String?
+  images        Image[]
+}
+
+model Technology {
+  id            String @id @default(cuid())
+  name          String
+  projects      Project[]
+}
+
+model Image {
+  id          String  @id @default(cuid())
+  altText     String?
+  contentType String
+  blob        Bytes
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  projects    Project[]
+}
+
 model Note {
   id      String @id @default(cuid())
   title   String

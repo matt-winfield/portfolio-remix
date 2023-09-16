@@ -1,5 +1,6 @@
 import { noteHandler } from '#app/features/cms/resourceHandlers/noteHandler.tsx';
 import { noteImageHandler } from '#app/features/cms/resourceHandlers/noteImageHandler.tsx';
+import { projectHandler } from '#app/features/cms/resourceHandlers/projectHandler.tsx';
 import { userHandler } from '#app/features/cms/resourceHandlers/userHandler.tsx';
 import { prisma } from '#app/utils/db.server.ts';
 import { requireUserWithRole } from '#app/utils/permissions.ts';
@@ -60,6 +61,10 @@ export const loader = async ({ request }: DataFunctionArgs) => {
     switch (body.resource.toLowerCase()) {
         case 'user': {
             const result = await userHandler(body);
+            return json(result);
+        }
+        case 'project': {
+            const result = await projectHandler(body);
             return json(result);
         }
         case 'note': {

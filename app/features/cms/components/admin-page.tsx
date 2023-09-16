@@ -17,6 +17,10 @@ import { NoteEdit } from './resources/note/note-edit.tsx';
 import { NoteList } from './resources/note/note-list.tsx';
 import { NoteShow } from './resources/note/note-show.tsx';
 import { PermissionList } from './resources/permission/permission-list.tsx';
+import { ProjectCreate } from './resources/project/project-create.tsx';
+import { ProjectEdit } from './resources/project/project-edit.tsx';
+import { ProjectList } from './resources/project/project-list.tsx';
+import { ProjectShow } from './resources/project/project-show.tsx';
 import { RoleList } from './resources/role/role-list.tsx';
 import { UserCreate } from './resources/user/user-create.tsx';
 import { UserEdit } from './resources/user/user-edit.tsx';
@@ -69,6 +73,14 @@ const App = () => {
                 edit={UserEdit}
                 create={UserCreate}
                 recordRepresentation={(user) => user.username ?? user.email}
+            />
+            <Resource
+                name="Project"
+                list={ProjectList}
+                show={ProjectShow}
+                edit={ProjectEdit}
+                create={ProjectCreate}
+                recordRepresentation="name"
             />
             <Resource
                 name="Note"

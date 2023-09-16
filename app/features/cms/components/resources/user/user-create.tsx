@@ -4,13 +4,14 @@ import {
     ReferenceArrayInput,
     SimpleForm,
     TextInput,
+    required,
 } from 'react-admin';
 
 export const UserCreate = () => (
     <Create>
         <SimpleForm>
             <TextInput source="email" />
-            <TextInput source="username" />
+            <TextInput source="username" validate={[required()]} />
             <TextInput source="name" />
             <ReferenceArrayInput
                 label="Roles"
