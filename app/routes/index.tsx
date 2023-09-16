@@ -19,9 +19,6 @@ const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
         opacity: 1,
-        transition: {
-            staggerChildren: 0.2,
-        },
     },
 };
 
@@ -41,16 +38,18 @@ export default function Index() {
                 className="absolute bottom-10 left-1/2 right-0 z-10 flex w-full -translate-x-1/2 flex-wrap justify-center gap-x-6 gap-y-1 py-5 md:bottom-auto md:left-auto md:top-1/2 md:w-fit md:-translate-y-1/2 md:flex-col md:items-end md:gap-y-6 md:p-0"
             >
                 <MotionLink variants={linkVariants} to="/projects">
-                    Projects
+                    <motion.div layoutId="projects">Projects</motion.div>
                 </MotionLink>
                 <MotionLink variants={linkVariants} to="/skills">
-                    Skills
+                    <motion.div layoutId="skills">Skills</motion.div>
                 </MotionLink>
                 <MotionLink variants={linkVariants} to="/experience">
-                    Experience
+                    <motion.div layoutId="experience">Experience</motion.div>
                 </MotionLink>
                 <MotionLink variants={linkVariants} to="/qualifications">
-                    Qualifications
+                    <motion.div layoutId="qualifications">
+                        Qualifications
+                    </motion.div>
                 </MotionLink>
             </motion.div>
         </main>

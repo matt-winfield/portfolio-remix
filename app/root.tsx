@@ -14,13 +14,13 @@ import {
     Links,
     LiveReload,
     Meta,
-    Outlet,
     Scripts,
     ScrollRestoration,
     useFetcher,
     useFetchers,
     useLoaderData,
     useMatches,
+    useOutlet,
     useSubmit,
 } from '@remix-run/react';
 import { withSentry } from '@sentry/remix';
@@ -250,6 +250,7 @@ function App() {
     const user = useOptionalUser();
     const theme = useTheme();
     const matches = useMatches();
+    const outlet = useOutlet();
     const isOnCmsPage = matches.find((m) => m.id === 'routes/admin_.cms.$');
     const isOnIndexPage = matches.find((m) => m.id === 'routes/index');
 
@@ -286,9 +287,7 @@ function App() {
                     </header>
                 )}
 
-                <div className="flex-1">
-                    <Outlet />
-                </div>
+                <div className="flex-1">{outlet}</div>
             </div>
             <Confetti id={data.confettiId} />
             <EpicToaster toast={data.toast} />
@@ -301,6 +300,7 @@ function UserDropdown() {
     const user = useUser();
     const submit = useSubmit();
     const formRef = useRef<HTMLFormElement>(null);
+
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
