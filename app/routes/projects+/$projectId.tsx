@@ -1,11 +1,20 @@
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx';
 import { Button } from '#app/components/ui/button.tsx';
 import { IconList } from '#app/features/icons/components/icon-list.tsx';
+import richtextStylesUrl from '#app/styles/richtext.css';
 import { prisma } from '#app/utils/db.server.ts';
 import { invariantResponse } from '#app/utils/misc.tsx';
 import { useLoaderData } from '@remix-run/react';
-import { json, type DataFunctionArgs } from '@remix-run/server-runtime';
+import {
+    json,
+    type DataFunctionArgs,
+    type LinksFunction,
+} from '@remix-run/server-runtime';
 import { motion } from 'framer-motion';
+
+export const links: LinksFunction = () => [
+    { rel: 'stylesheet', href: richtextStylesUrl },
+];
 
 export const loader = async ({ params }: DataFunctionArgs) => {
     const { projectId } = params;
@@ -89,7 +98,7 @@ export default function Project() {
             </div>
             {data.project.description && (
                 <div
-                    className="my-2"
+                    className="rich-text my-2"
                     dangerouslySetInnerHTML={{
                         __html: data.project.description,
                     }}

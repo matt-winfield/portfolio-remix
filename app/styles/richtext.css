@@ -1,0 +1,6 @@
+.rich-text {
+    a {
+        text-decoration: underline;
+        @apply text-accent-foreground;
+    }
+}

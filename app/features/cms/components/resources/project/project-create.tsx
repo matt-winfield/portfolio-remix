@@ -13,7 +13,7 @@ export const ProjectCreate = () => (
     <Create>
         <SimpleForm>
             <TextInput source="name" validate={[required()]} />
-            <RichTextInput source="description" />
+            <RichTextInput source="description" className="rich-text" />
             <TextInput source="codeUrl" />
             <TextInput source="demoUrl" />
             <ReferenceArrayInput
