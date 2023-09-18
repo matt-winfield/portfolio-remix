@@ -46,7 +46,7 @@ export default function Project() {
     return (
         <div className="container">
             <motion.div
-                className="mb-5 w-fit text-5xl"
+                className="z-10 mb-5 w-fit text-5xl"
                 layoutId={`${data.project.id}-title`}
             >
                 {data.project.name}

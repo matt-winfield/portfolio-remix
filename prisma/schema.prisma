@@ -48,6 +48,22 @@ model Technology {
   projects      Project[]
 }
 
+model Experience {
+  id            String @id @default(cuid())
+  title         String
+  company       String
+  startDate     DateTime
+  endDate       DateTime?
+}
+
+model Qualification {
+  id            String @id @default(cuid())
+  title         String
+  institution   String
+  grade         String
+  date          DateTime
+}
+
 model Image {
   id          String  @id @default(cuid())
   altText     String?

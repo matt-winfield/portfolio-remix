@@ -13,18 +13,15 @@ import { ImageCreate } from './resources/image/image-create.tsx';
 import { ImageEdit } from './resources/image/image-edit.tsx';
 import { ImageList } from './resources/image/image-list.tsx';
 import { ImageShow } from './resources/image/image-show.tsx';
-import { NoteImageCreate } from './resources/note-image/note-image-create.tsx';
-import { NoteImageEdit } from './resources/note-image/note-image-edit.tsx';
-import { NoteImageList } from './resources/note-image/note-image-list.tsx';
-import { NoteImageShow } from './resources/note-image/note-image-show.tsx';
-import { NoteEdit } from './resources/note/note-edit.tsx';
-import { NoteList } from './resources/note/note-list.tsx';
-import { NoteShow } from './resources/note/note-show.tsx';
 import { PermissionList } from './resources/permission/permission-list.tsx';
 import { ProjectCreate } from './resources/project/project-create.tsx';
 import { ProjectEdit } from './resources/project/project-edit.tsx';
 import { ProjectList } from './resources/project/project-list.tsx';
 import { ProjectShow } from './resources/project/project-show.tsx';
+import { QualificationCreate } from './resources/qualification/qualification-create.tsx';
+import { QualificationEdit } from './resources/qualification/qualification-edit.tsx';
+import { QualificationList } from './resources/qualification/qualification-list.tsx';
+import { QualificationShow } from './resources/qualification/qualification-show.tsx';
 import { RoleList } from './resources/role/role-list.tsx';
 import { TechnologyCreate } from './resources/technology/technology-create.tsx';
 import { TechnologyEdit } from './resources/technology/technology-edit.tsx';
@@ -106,12 +103,20 @@ const App = () => {
                 recordRepresentation="name"
             />
             <Resource
+                name="Qualification"
+                list={QualificationList}
+                edit={QualificationEdit}
+                show={QualificationShow}
+                create={QualificationCreate}
+                recordRepresentation="title"
+            />
+            {/* <Resource
                 name="Note"
                 list={NoteList}
                 show={NoteShow}
                 edit={NoteEdit}
                 recordRepresentation="title"
-            />
+            /> */}
             <Resource
                 name="Role"
                 list={RoleList}
@@ -126,13 +131,13 @@ const App = () => {
                 edit={EditGuesser}
                 recordRepresentation="name"
             />
-            <Resource
+            {/* <Resource
                 name="NoteImage"
                 list={NoteImageList}
                 show={NoteImageShow}
                 edit={NoteImageEdit}
                 create={NoteImageCreate}
-            />
+            /> */}
         </Admin>
     );
 };

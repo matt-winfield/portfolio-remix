@@ -81,4 +81,16 @@ export const dataProvider = (apiUrl: string, options?: Options) =>
                 return data;
             },
         },
+        {
+            resource: 'Qualification',
+            beforeSave: async (data) => {
+                const dateString = data.date as string;
+
+                if (dateString) {
+                    data.date = new Date(dateString).toISOString();
+                }
+
+                return data;
+            },
+        },
     ]);
