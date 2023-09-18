@@ -1,3 +1,4 @@
+import { IconList } from '#app/features/icons/components/icon-list.tsx';
 import { prisma } from '#app/utils/db.server.ts';
 import { useLoaderData } from '@remix-run/react';
 import { json } from '@remix-run/server-runtime';
@@ -8,6 +9,7 @@ export const loader = async () => {
         select: {
             id: true,
             name: true,
+            icons: true,
         },
     });
 
@@ -46,9 +48,19 @@ export default function Skills() {
                         <motion.div
                             variants={skillsVariants}
                             key={technology.id}
-                            className="rounded-md bg-card px-3 py-2 text-xl"
+                            className="flex items-center gap-2 rounded-md bg-card px-3 py-2 text-xl"
                         >
-                            {technology.name}
+                            <span>
+                                {technology.icons && (
+                                    <IconList
+                                        icons={technology.icons}
+                                        iconProps={{
+                                            className: 'fill-accent-foreground',
+                                        }}
+                                    />
+                                )}
+                            </span>
+                            <span>{technology.name}</span>
                         </motion.div>
                     ))}
                 </motion.div>

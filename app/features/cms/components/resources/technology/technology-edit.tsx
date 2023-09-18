@@ -5,6 +5,7 @@ export const TechnologyEdit = () => (
         <SimpleForm>
             <TextInput source="id" disabled />
             <TextInput source="name" validate={[required()]} />
+            <TextInput source="icons" />
         </SimpleForm>
     </Edit>
 );

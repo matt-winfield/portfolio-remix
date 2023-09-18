@@ -5,6 +5,7 @@ export const TechnologyShow = () => (
         <SimpleShowLayout>
             <TextField source="id" />
             <TextField source="name" />
+            <TextField source="icons" />
         </SimpleShowLayout>
     </Show>
 );

@@ -4,6 +4,7 @@ export const TechnologyCreate = () => (
     <Create>
         <SimpleForm>
             <TextInput source="name" validate={[required()]} />
+            <TextInput source="icons" />
         </SimpleForm>
     </Create>
 );

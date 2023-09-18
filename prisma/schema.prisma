@@ -46,6 +46,8 @@ model Technology {
   id            String @id @default(cuid())
   name          String
   projects      Project[]
+  /// Icon names, comma separated
+  icons         String?
 }
 
 model Experience {

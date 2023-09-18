@@ -1,5 +1,6 @@
 import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx';
 import { Button } from '#app/components/ui/button.tsx';
+import { IconList } from '#app/features/icons/components/icon-list.tsx';
 import { prisma } from '#app/utils/db.server.ts';
 import { invariantResponse } from '#app/utils/misc.tsx';
 import { useLoaderData } from '@remix-run/react';
@@ -30,6 +31,7 @@ export const loader = async ({ params }: DataFunctionArgs) => {
                 select: {
                     id: true,
                     name: true,
+                    icons: true,
                 },
             },
         },
@@ -69,9 +71,19 @@ export default function Project() {
                 {data.project.technologies.map((technology) => (
                     <div
                         key={technology.id}
-                        className="flex items-center justify-center rounded-md bg-card px-3 py-2"
+                        className="flex items-center justify-center gap-2 rounded-md bg-card px-3 py-2"
                     >
-                        {technology.name}
+                        <span>
+                            {technology.icons && (
+                                <IconList
+                                    icons={technology.icons}
+                                    iconProps={{
+                                        className: 'fill-accent-foreground',
+                                    }}
+                                />
+                            )}
+                        </span>
+                        <span>{technology.name}</span>
                     </div>
                 ))}
             </div>
