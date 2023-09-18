@@ -43,6 +43,7 @@ export type IconName =
     | 'reset'
     | 'styledcomponents'
     | 'sun'
+    | 'tailwindcss'
     | 'trash'
     | 'typescript'
     | 'update';
