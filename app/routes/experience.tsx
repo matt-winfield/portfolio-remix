@@ -4,7 +4,7 @@ export default function Experience() {
     return (
         <div className="container">
             <motion.div
-                className="relative w-fit text-5xl"
+                className="relative mb-5 w-fit text-5xl"
                 layoutId="experience"
             >
                 Experience

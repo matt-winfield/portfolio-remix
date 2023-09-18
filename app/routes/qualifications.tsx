@@ -4,7 +4,7 @@ export default function Qualifications() {
     return (
         <div className="container">
             <motion.div
-                className="relative w-fit text-5xl"
+                className="relative mb-5 w-fit text-5xl"
                 layoutId="qualifications"
             >
                 Qualifications
