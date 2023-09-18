@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, type DurationObjectUnits } from 'luxon';
 import { useTimeSince } from '../hooks/use-time-since.tsx';
 
 interface DateDisplayProps {
@@ -20,12 +20,17 @@ export const ExperienceDateDisplay = ({
             ['years', 'months', 'weeks'],
         );
 
-        const formattedDuration = duration
-            .toHuman({
-                maximumFractionDigits: 0,
-                useGrouping: true,
-            })
-            .split(',')[0];
+        const biggestUnit =
+            (Object.keys(duration.toObject()).find(
+                (key) =>
+                    (duration.toObject()[key as keyof DurationObjectUnits] ??
+                        0) > 0,
+            ) as keyof DurationObjectUnits) ?? ('months' as const);
+
+        const formattedDuration = duration.shiftTo(biggestUnit).toHuman({
+            maximumFractionDigits: 0,
+            unit: biggestUnit,
+        });
 
         if (start.getFullYear() === end.getFullYear()) {
             return (
