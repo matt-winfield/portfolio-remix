@@ -84,4 +84,9 @@ ADD other/setup-swap.js other/setup-swap.js
 ADD index.js index.js
 RUN mkdir -p /data ${LITEFS_DIR}
 
+# This is a bit of a hack, ideally we only add the files that are needed for production
+# But sentry (for example) requires the .git folder to determine release version
+# And there are other edge cases for files that we don't want to have to manually add to the Dockerfile
+ADD . .
+
 CMD ["litefs", "mount"]
