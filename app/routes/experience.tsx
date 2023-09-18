@@ -5,7 +5,7 @@ import { json } from '@remix-run/server-runtime';
 import { motion } from 'framer-motion';
 
 export const loader = async () => {
-    const data = await prisma.experience.findMany({
+    const experience = await prisma.experience.findMany({
         select: {
             id: true,
             title: true,
@@ -21,7 +21,7 @@ export const loader = async () => {
         },
     });
 
-    return json({ data });
+    return json({ experience });
 };
 
 const experienceVariants = {
@@ -53,7 +53,7 @@ export default function Experience() {
                     transition={{ staggerChildren: 0.1 }}
                     className="flex w-fit flex-col gap-5"
                 >
-                    {data.data.map((experience) => (
+                    {data.experience.map((experience) => (
                         <motion.div
                             variants={experienceVariants}
                             key={experience.id}
