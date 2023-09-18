@@ -9,6 +9,10 @@ import {
 } from 'react-admin';
 import { authProvider } from '../providers/auth-provider.tsx';
 import { dataProvider } from '../providers/data-provider.tsx';
+import { ExperienceCreate } from './resources/experience/experience-create.tsx';
+import { ExperienceEdit } from './resources/experience/experience-edit.tsx';
+import { ExperienceList } from './resources/experience/experience-list.tsx';
+import { ExperienceShow } from './resources/experience/experience-show.tsx';
 import { ImageCreate } from './resources/image/image-create.tsx';
 import { ImageEdit } from './resources/image/image-edit.tsx';
 import { ImageList } from './resources/image/image-list.tsx';
@@ -101,6 +105,14 @@ const App = () => {
                 show={TechnologyShow}
                 create={TechnologyCreate}
                 recordRepresentation="name"
+            />
+            <Resource
+                name="Experience"
+                list={ExperienceList}
+                edit={ExperienceEdit}
+                show={ExperienceShow}
+                create={ExperienceCreate}
+                recordRepresentation="title"
             />
             <Resource
                 name="Qualification"

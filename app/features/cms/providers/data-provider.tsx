@@ -93,4 +93,21 @@ export const dataProvider = (apiUrl: string, options?: Options) =>
                 return data;
             },
         },
+        {
+            resource: 'Experience',
+            beforeSave: async (data) => {
+                const startDateString = data.startDate as string;
+                const endDateString = data.endDate as string;
+
+                if (startDateString) {
+                    data.startDate = new Date(startDateString).toISOString();
+                }
+
+                if (endDateString) {
+                    data.endDate = new Date(endDateString).toISOString();
+                }
+
+                return data;
+            },
+        },
     ]);
