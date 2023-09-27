@@ -332,20 +332,19 @@ function UserDropdown() {
             </DropdownMenuTrigger>
             <DropdownMenuPortal>
                 <DropdownMenuContent sideOffset={8} align="start">
+                    {user.roles.some((role) => role.name === 'admin') && (
+                        <DropdownMenuItem asChild>
+                            <Link to="/admin/cms">
+                                <Icon className="text-body-md" name="plus">
+                                    Admin
+                                </Icon>
+                            </Link>
+                        </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem asChild>
                         <Link prefetch="intent" to={`/users/${user.username}`}>
                             <Icon className="text-body-md" name="avatar">
                                 Profile
-                            </Icon>
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem asChild>
-                        <Link
-                            prefetch="intent"
-                            to={`/users/${user.username}/notes`}
-                        >
-                            <Icon className="text-body-md" name="pencil-2">
-                                Notes
                             </Icon>
                         </Link>
                     </DropdownMenuItem>

@@ -83,13 +83,8 @@ export default function ProfileRoute() {
                         </Form>
                     ) : null}
                     <div className="mt-10 flex gap-4">
-                        {isLoggedInUser ? (
+                        {isLoggedInUser && (
                             <>
-                                <Button asChild>
-                                    <Link to="notes" prefetch="intent">
-                                        My notes
-                                    </Link>
-                                </Button>
                                 <Button asChild>
                                     <Link
                                         to="/settings/profile"
@@ -99,12 +94,6 @@ export default function ProfileRoute() {
                                     </Link>
                                 </Button>
                             </>
-                        ) : (
-                            <Button asChild>
-                                <Link to="notes" prefetch="intent">
-                                    {userDisplayName}'s notes
-                                </Link>
-                            </Button>
                         )}
                     </div>
                 </div>
