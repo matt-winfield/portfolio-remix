@@ -35,6 +35,7 @@ import { Form, Link, useActionData, useSearchParams } from '@remix-run/react';
 import { safeRedirect } from 'remix-utils';
 import { z } from 'zod';
 import { getRedirectToUrl, type VerifyFunctionArgs } from './verify.tsx';
+import { signupEnabled } from '#app/features/signup/signup-config.ts';
 
 const verifiedTimeKey = 'verified-time';
 const unverifiedSessionIdKey = 'unverified-session-id';
@@ -336,7 +337,7 @@ export default function LoginPage() {
                                 </StatusButton>
                             </div>
                         </Form>
-                        <div className="mt-5 flex flex-col gap-5 border-b-2 border-t-2 border-border py-3">
+                        <div className="mt-5 flex flex-col gap-5 border-t-2 border-border py-3">
                             {providerNames.map((providerName) => (
                                 <ProviderConnectionForm
                                     key={providerName}
@@ -346,22 +347,24 @@ export default function LoginPage() {
                                 />
                             ))}
                         </div>
-                        <div className="flex items-center justify-center gap-2 pt-6">
-                            <span className="text-muted-foreground">
-                                New here?
-                            </span>
-                            <Link
-                                to={
-                                    redirectTo
-                                        ? `/signup?${encodeURIComponent(
-                                              redirectTo,
-                                          )}`
-                                        : '/signup'
-                                }
-                            >
-                                Create an account
-                            </Link>
-                        </div>
+                        {signupEnabled && (
+                            <div className="flex items-center justify-center gap-2 pt-6">
+                                <span className="text-muted-foreground">
+                                    New here?
+                                </span>
+                                <Link
+                                    to={
+                                        redirectTo
+                                            ? `/signup?${encodeURIComponent(
+                                                  redirectTo,
+                                              )}`
+                                            : '/signup'
+                                    }
+                                >
+                                    Create an account
+                                </Link>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>

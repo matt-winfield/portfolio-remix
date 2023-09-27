@@ -21,12 +21,22 @@ import {
 import { Form, useActionData, useSearchParams } from '@remix-run/react';
 import { z } from 'zod';
 import { prepareVerification } from './verify.tsx';
+import { signupEnabled } from '#app/features/signup/signup-config.ts';
 
 const SignupSchema = z.object({
     email: EmailSchema,
 });
 
 export async function action({ request }: DataFunctionArgs) {
+    if (signupEnabled === false) {
+        throw json(
+            {
+                error: 'Signup is disabled',
+            },
+            { status: 403 },
+        );
+    }
+
     const formData = await request.formData();
     const submission = await parse(formData, {
         schema: SignupSchema.superRefine(async (data, ctx) => {
@@ -99,6 +109,19 @@ export function SignupEmail({
         </E.Html>
     );
 }
+
+export const loader = () => {
+    if (signupEnabled === false) {
+        throw json(
+            {
+                error: 'Signup is disabled',
+            },
+            { status: 403 },
+        );
+    }
+
+    return null;
+};
 
 export const meta: V2_MetaFunction = () => {
     return [{ title: 'Sign Up | Matt Winfield' }];
