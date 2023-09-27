@@ -1,3 +1,4 @@
+import { signupEnabled } from '#app/features/signup/signup-config.ts';
 import { prisma } from '#app/utils/db.server.ts';
 import { invariant } from '#app/utils/misc.tsx';
 import { readEmail } from '#tests/mocks/utils.ts';
@@ -30,6 +31,10 @@ test.afterEach(async () => {
 });
 
 test('onboarding with link', async ({ page }) => {
+    if (signupEnabled === false) {
+        return;
+    }
+
     const onboardingData = getOnboardingData();
 
     await page.goto('/projects');
@@ -94,6 +99,10 @@ test('onboarding with link', async ({ page }) => {
 });
 
 test('onboarding with a short code', async ({ page }) => {
+    if (signupEnabled === false) {
+        return;
+    }
+
     const onboardingData = getOnboardingData();
 
     await page.goto('/signup');
