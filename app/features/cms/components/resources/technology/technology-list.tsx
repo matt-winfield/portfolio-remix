@@ -1,10 +1,11 @@
-import { Datagrid, List, TextField } from 'react-admin';
+import { List, TextField } from 'react-admin';
+import { ReorderableDataGrid } from '../../reorderable-datagrid/reorderable-datagrid.tsx';
 
 export const TechnologyList = () => (
     <List>
-        <Datagrid rowClick="show">
+        <ReorderableDataGrid rowClick="show">
             <TextField source="name" />
             <TextField source="icons" />
-        </Datagrid>
+        </ReorderableDataGrid>
     </List>
 );
