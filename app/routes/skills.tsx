@@ -1,8 +1,8 @@
-import { IconList } from '#app/features/icons/components/icon-list.tsx';
-import { prisma } from '#app/utils/db.server.ts';
 import { useLoaderData } from '@remix-run/react';
 import { json } from '@remix-run/server-runtime';
 import { motion } from 'framer-motion';
+import { IconList } from '#app/features/icons/components/icon-list.tsx';
+import { prisma } from '#app/utils/db.server.ts';
 
 export const loader = async () => {
     const technologies = await prisma.technology.findMany({
@@ -10,6 +10,9 @@ export const loader = async () => {
             id: true,
             name: true,
             icons: true,
+        },
+        orderBy: {
+            order: 'asc',
         },
     });
 
