@@ -1,18 +1,18 @@
+import { json, type DataFunctionArgs } from '@remix-run/server-runtime';
+import { defaultHandler, type RaPayload } from 'ra-data-simple-prisma';
 import { imageHandler } from '#app/features/cms/resourceHandlers/imageHandler.tsx';
 import { noteHandler } from '#app/features/cms/resourceHandlers/noteHandler.tsx';
 import { noteImageHandler } from '#app/features/cms/resourceHandlers/noteImageHandler.tsx';
 import { projectHandler } from '#app/features/cms/resourceHandlers/projectHandler.tsx';
+import { technologyHandler } from '#app/features/cms/resourceHandlers/technologyHandler.tsx';
 import { userHandler } from '#app/features/cms/resourceHandlers/userHandler.tsx';
 import { prisma } from '#app/utils/db.server.ts';
 import { requireUserWithRole } from '#app/utils/permissions.ts';
-import { json, type DataFunctionArgs } from '@remix-run/server-runtime';
-import { defaultHandler, type RaPayload } from 'ra-data-simple-prisma';
 
 export const loader = async ({ request }: DataFunctionArgs) => {
     await requireUserWithRole(request, 'admin');
     const body = (await request.json()) as RaPayload;
 
-    let options = undefined;
     switch (body.resource.toLowerCase()) {
         case 'user': {
             const result = await userHandler(body);
@@ -20,6 +20,10 @@ export const loader = async ({ request }: DataFunctionArgs) => {
         }
         case 'project': {
             const result = await projectHandler(body);
+            return json(result);
+        }
+        case 'technology': {
+            const result = await technologyHandler(body);
             return json(result);
         }
         case 'image': {
@@ -36,14 +40,7 @@ export const loader = async ({ request }: DataFunctionArgs) => {
         }
     }
 
-    const result = await defaultHandler(body, prisma, {
-        getOne: options,
-        getList: options,
-        getMany: options,
-        update: options,
-        create: options,
-        getManyReference: options,
-    });
+    const result = await defaultHandler(body, prisma);
 
     return json(result);
 };

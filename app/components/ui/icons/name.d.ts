@@ -14,6 +14,7 @@ export type IconName =
     | 'docker'
     | 'dots-horizontal'
     | 'download'
+    | 'drag-handle'
     | 'envelope-closed'
     | 'exit'
     | 'file-text'

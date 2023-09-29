@@ -175,7 +175,7 @@ dependencies:
         version: 3.1.0(@prisma/client@5.1.1)(@types/react@18.2.20)(react-dom@18.2.0)(react-is@18.2.0)(react@18.2.0)
     ra-input-rich-text:
         specifier: ^4.14.1
-        version: 4.14.1(@mui/icons-material@5.14.7)(@mui/material@5.14.11)(ra-core@4.13.3)(ra-ui-materialui@4.13.3)(react-dom@18.2.0)(react@18.2.0)
+        version: 4.14.1(@mui/icons-material@5.14.11)(@mui/material@5.14.11)(ra-core@4.13.3)(ra-ui-materialui@4.13.3)(react-dom@18.2.0)(react@18.2.0)
     react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -3785,10 +3785,10 @@ packages:
             }
         dev: false
 
-    /@mui/icons-material@5.14.7(@mui/material@5.14.11)(@types/react@18.2.20)(react@18.2.0):
+    /@mui/icons-material@5.14.11(@mui/material@5.14.11)(@types/react@18.2.20)(react@18.2.0):
         resolution:
             {
-                integrity: sha512-mWp4DwMa8c1Gx9yOEtPgxM4b+e6hAbtZyzfSubdBwrnEE6G5D2rbAJ5MB+If6kfI48JaYaJ5j8+zAdmZLuZc0A==,
+                integrity: sha512-aHReLasBuS/+hhPzbZCgZ0eTcZ2QRnoC2WNK7XvdAf3l+LjC1flzjh6GWw1tZJ5NHnZ+bivdwtLFQ8XTR96JkA==,
             }
         engines: { node: '>=12.0.0' }
         peerDependencies:
@@ -15720,7 +15720,7 @@ packages:
             - react-router-dom
         dev: false
 
-    /ra-input-rich-text@4.14.1(@mui/icons-material@5.14.7)(@mui/material@5.14.11)(ra-core@4.13.3)(ra-ui-materialui@4.13.3)(react-dom@18.2.0)(react@18.2.0):
+    /ra-input-rich-text@4.14.1(@mui/icons-material@5.14.11)(@mui/material@5.14.11)(ra-core@4.13.3)(ra-ui-materialui@4.13.3)(react-dom@18.2.0)(react@18.2.0):
         resolution:
             {
                 integrity: sha512-P1VlWdDSePf7BA7BkOsO++7ah4uAyfwgo9Fa4MhbzMwiSUWZVyTcCtjGYqDRkTR87jBHr73J0Xw3crlmO+KVbg==,
@@ -15733,7 +15733,7 @@ packages:
             react: ^16.9.0 || ^17.0.0 || ^18.0.0
             react-dom: ^16.9.0 || ^17.0.0 || ^18.0.0
         dependencies:
-            '@mui/icons-material': 5.14.7(@mui/material@5.14.11)(@types/react@18.2.20)(react@18.2.0)
+            '@mui/icons-material': 5.14.11(@mui/material@5.14.11)(@types/react@18.2.20)(react@18.2.0)
             '@mui/material': 5.14.11(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.20)(react-dom@18.2.0)(react@18.2.0)
             '@tiptap/core': 2.1.10(@tiptap/pm@2.1.10)
             '@tiptap/extension-color': 2.1.10(@tiptap/core@2.1.10)(@tiptap/extension-text-style@2.1.10)
@@ -15749,7 +15749,7 @@ packages:
             '@tiptap/starter-kit': 2.1.10(@tiptap/pm@2.1.10)
             clsx: 1.2.1
             ra-core: 4.13.3(history@5.3.0)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0)
-            ra-ui-materialui: 4.13.3(@mui/icons-material@5.14.7)(@mui/material@5.14.11)(ra-core@4.13.3)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-is@18.2.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0)
+            ra-ui-materialui: 4.13.3(@mui/icons-material@5.14.11)(@mui/material@5.14.11)(ra-core@4.13.3)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-is@18.2.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0)
             react: 18.2.0
             react-dom: 18.2.0(react@18.2.0)
         dev: false
@@ -15771,7 +15771,7 @@ packages:
             - react-router-dom
         dev: false
 
-    /ra-ui-materialui@4.13.3(@mui/icons-material@5.14.7)(@mui/material@5.14.11)(ra-core@4.13.3)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-is@18.2.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0):
+    /ra-ui-materialui@4.13.3(@mui/icons-material@5.14.11)(@mui/material@5.14.11)(ra-core@4.13.3)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-is@18.2.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0):
         resolution:
             {
                 integrity: sha512-Xhn1LFPQLvYZFNf7al6Cfn/5Si19SyG7MiOqI/xNjzJCJ7IAQGid+tVCpLGhUc1uejV5ZK5NNB7bdLEw8jUfiw==,
@@ -15787,7 +15787,7 @@ packages:
             react-router: ^6.1.0
             react-router-dom: ^6.1.0
         dependencies:
-            '@mui/icons-material': 5.14.7(@mui/material@5.14.11)(@types/react@18.2.20)(react@18.2.0)
+            '@mui/icons-material': 5.14.11(@mui/material@5.14.11)(@types/react@18.2.20)(react@18.2.0)
             '@mui/material': 5.14.11(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.20)(react-dom@18.2.0)(react@18.2.0)
             autosuggest-highlight: 3.3.4
             clsx: 1.2.1
@@ -15883,13 +15883,13 @@ packages:
         dependencies:
             '@emotion/react': 11.11.1(@types/react@18.2.20)(react@18.2.0)
             '@emotion/styled': 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.20)(react@18.2.0)
-            '@mui/icons-material': 5.14.7(@mui/material@5.14.11)(@types/react@18.2.20)(react@18.2.0)
+            '@mui/icons-material': 5.14.11(@mui/material@5.14.11)(@types/react@18.2.20)(react@18.2.0)
             '@mui/material': 5.14.11(@emotion/react@11.11.1)(@emotion/styled@11.11.0)(@types/react@18.2.20)(react-dom@18.2.0)(react@18.2.0)
             history: 5.3.0
             ra-core: 4.13.3(history@5.3.0)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0)
             ra-i18n-polyglot: 4.13.3(history@5.3.0)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0)
             ra-language-english: 4.13.3(history@5.3.0)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0)
-            ra-ui-materialui: 4.13.3(@mui/icons-material@5.14.7)(@mui/material@5.14.11)(ra-core@4.13.3)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-is@18.2.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0)
+            ra-ui-materialui: 4.13.3(@mui/icons-material@5.14.11)(@mui/material@5.14.11)(ra-core@4.13.3)(react-dom@18.2.0)(react-hook-form@7.46.0)(react-is@18.2.0)(react-router-dom@6.14.2)(react-router@6.14.2)(react@18.2.0)
             react: 18.2.0
             react-dom: 18.2.0(react@18.2.0)
             react-hook-form: 7.46.0(react@18.2.0)

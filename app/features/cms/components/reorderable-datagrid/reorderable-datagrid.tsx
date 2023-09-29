@@ -13,8 +13,14 @@ import {
     useSortable,
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-import { TableBody } from '@mui/material';
-import { useState } from 'react';
+import {
+    Checkbox,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+} from '@mui/material';
+import { Children, isValidElement, useCallback, useState } from 'react';
 import {
     Datagrid,
     type DatagridRowProps,
@@ -24,9 +30,13 @@ import {
     DatagridClasses,
     useDataProvider,
     useListContext,
+    type DatagridHeaderProps,
+    DatagridHeaderCell,
+    useRefresh,
 } from 'react-admin';
 import { useMutation } from 'react-query';
 import { Button } from '#app/components/ui/button.tsx';
+import { Icon } from '#app/components/ui/icon.tsx';
 import { cn } from '#app/utils/misc.tsx';
 
 interface ReorderableDataGridProps extends DatagridProps {}
@@ -34,6 +44,7 @@ interface ReorderableDataGridProps extends DatagridProps {}
 export const ReorderableDataGrid = ({ ...props }: ReorderableDataGridProps) => {
     const dataProvider = useDataProvider();
     const { resource, data } = useListContext();
+    const refresh = useRefresh();
 
     const mappedData =
         data?.map((record) => record.id as UniqueIdentifier) ?? [];
@@ -42,11 +53,13 @@ export const ReorderableDataGrid = ({ ...props }: ReorderableDataGridProps) => {
     const hasChanges = ids.some((id, index) => id !== mappedData[index]);
 
     const { mutate, isLoading } = useMutation(() => {
-        return dataProvider.update(resource, {
-            id: `${resource}-list`,
+        const result = dataProvider.update(resource, {
+            id: 'list',
             data: { ids },
             previousData: { ids: mappedData },
         });
+        refresh();
+        return result;
     });
 
     return (
@@ -54,6 +67,7 @@ export const ReorderableDataGrid = ({ ...props }: ReorderableDataGridProps) => {
             <Datagrid
                 {...props}
                 body={<ReorderableDataGridBody onItemsReordered={setIds} />}
+                header={<ReorderableDataGridHeader />}
             />
             <Button
                 className="m-2"
@@ -63,6 +77,92 @@ export const ReorderableDataGrid = ({ ...props }: ReorderableDataGridProps) => {
                 Save
             </Button>
         </div>
+    );
+};
+
+// Re-implementation of DatagridHeader to add column for drag handle
+export const ReorderableDataGridHeader = ({
+    hasBulkActions,
+    isRowSelectable,
+    className,
+    children,
+}: DatagridHeaderProps) => {
+    const { resource, onSelect, selectedIds, data } = useListContext();
+    const selectableIds = Array.isArray(data)
+        ? isRowSelectable
+            ? data
+                  .filter((record) => isRowSelectable(record))
+                  .map((record: any) => record.id)
+            : data.map((record: any) => record.id)
+        : [];
+
+    const handleSelectAll = useCallback(
+        (event: { target: { checked: boolean } }) =>
+            onSelect(
+                event.target.checked
+                    ? selectedIds.concat(
+                          data
+                              .filter(
+                                  (record) => !selectedIds.includes(record.id),
+                              )
+                              .filter((record) =>
+                                  isRowSelectable
+                                      ? isRowSelectable(record)
+                                      : true,
+                              )
+                              .map((record) => record.id),
+                      )
+                    : [],
+            ),
+        [data, onSelect, isRowSelectable, selectedIds],
+    );
+
+    return (
+        <TableHead className={cn(className, DatagridClasses.thead)}>
+            <TableRow
+                className={cn(DatagridClasses.row, DatagridClasses.headerRow)}
+            >
+                {hasBulkActions && selectedIds && (
+                    <TableCell
+                        padding="checkbox"
+                        className={DatagridClasses.headerCell}
+                    >
+                        <Checkbox
+                            aria-label="Select all"
+                            className="select-all"
+                            color="primary"
+                            checked={
+                                selectedIds.length > 0 &&
+                                selectableIds.length > 0 &&
+                                selectableIds.every((id) =>
+                                    selectedIds.includes(id),
+                                )
+                            }
+                            onChange={handleSelectAll}
+                        />
+                    </TableCell>
+                )}
+                {Children.map(children, (field, index) =>
+                    isValidElement(field) ? (
+                        <DatagridHeaderCell
+                            className={cn(
+                                DatagridClasses.headerCell,
+                                `column-${(field.props as any).source}`,
+                            )}
+                            field={field}
+                            sort={{ field: 'order', order: 'ASC' }}
+                            isSorting={false}
+                            key={(field.props as any).source || index}
+                            resource={resource}
+                        />
+                    ) : null,
+                )}
+                {/* Extra cell for drag handle column */}
+                <TableCell
+                    className={cn('w-0', DatagridClasses.headerCell)}
+                ></TableCell>
+            </TableRow>
+        </TableHead>
     );
 };
 
@@ -182,12 +282,14 @@ export const ReorderableDataGridRow = ({
     };
 
     return (
-        <DatagridRow
-            {...props}
-            ref={setNodeRef}
-            style={style}
-            {...attributes}
-            {...listeners}
-        />
+        <DatagridRow {...props} ref={setNodeRef} style={style}>
+            {props.children}
+            <Icon
+                className="cursor-move"
+                name="drag-handle"
+                {...attributes}
+                {...listeners}
+            />
+        </DatagridRow>
     );
 };

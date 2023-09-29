@@ -4,8 +4,8 @@ import { ReorderableDataGrid } from '../../reorderable-datagrid/reorderable-data
 export const TechnologyList = () => (
     <List>
         <ReorderableDataGrid rowClick="show">
-            <TextField source="name" />
-            <TextField source="icons" />
+            <TextField source="name" sortable={false} />
+            <TextField source="icons" sortable={false} />
         </ReorderableDataGrid>
     </List>
 );
