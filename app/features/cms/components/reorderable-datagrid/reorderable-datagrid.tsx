@@ -22,16 +22,53 @@ import {
     type DatagridProps,
     DatagridRow,
     DatagridClasses,
+    useDataProvider,
+    useListContext,
 } from 'react-admin';
+import { useMutation } from 'react-query';
+import { Button } from '#app/components/ui/button.tsx';
 import { cn } from '#app/utils/misc.tsx';
 
 interface ReorderableDataGridProps extends DatagridProps {}
 
 export const ReorderableDataGrid = ({ ...props }: ReorderableDataGridProps) => {
-    return <Datagrid {...props} body={<ReorderableDataGridBody />} />;
+    const dataProvider = useDataProvider();
+    const { resource, data } = useListContext();
+
+    const mappedData =
+        data?.map((record) => record.id as UniqueIdentifier) ?? [];
+    const [ids, setIds] = useState(mappedData);
+
+    const hasChanges = ids.some((id, index) => id !== mappedData[index]);
+
+    const { mutate, isLoading } = useMutation(() => {
+        return dataProvider.update(resource, {
+            id: `${resource}-list`,
+            data: { ids },
+            previousData: { ids: mappedData },
+        });
+    });
+
+    return (
+        <div>
+            <Datagrid
+                {...props}
+                body={<ReorderableDataGridBody onItemsReordered={setIds} />}
+            />
+            <Button
+                className="m-2"
+                disabled={!hasChanges || isLoading}
+                onClick={() => mutate()}
+            >
+                Save
+            </Button>
+        </div>
+    );
 };
 
-interface ReorderableDataGridBodyProps extends DatagridBodyProps {}
+interface ReorderableDataGridBodyProps extends DatagridBodyProps {
+    onItemsReordered?: (ids: UniqueIdentifier[]) => void;
+}
 
 export const ReorderableDataGridBody = ({
     ref,
@@ -77,6 +114,7 @@ export const ReorderableDataGridBody = ({
             reordered.splice(newIndex, 0, active.id);
 
             setIds(reordered);
+            props.onItemsReordered?.(reordered);
         }
     };
 
