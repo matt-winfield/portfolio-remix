@@ -11,7 +11,7 @@ import {
 import { ReorderableDataGrid } from '../../reorderable-datagrid/reorderable-datagrid.tsx';
 
 export const ProjectList = () => (
-    <List>
+    <List pagination={false}>
         <ReorderableDataGrid rowClick="show">
             <TextField source="name" sortable={false} />
             <RichTextField
