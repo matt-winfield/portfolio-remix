@@ -5,26 +5,13 @@ import {
     getListHandler,
 } from 'ra-data-simple-prisma';
 import { prisma } from '#app/utils/db.server.ts';
+import { updateOrderHandler } from './utils/update-order.tsx';
 
 export const technologyHandler = async (body: RaPayload) => {
     switch (body.method) {
         case 'update': {
             if (body.params.id?.toLowerCase() === 'list') {
-                const ids = body.params.data?.ids as string[] | undefined;
-
-                if (!ids) {
-                    return;
-                }
-
-                const promises = ids.map(async (id, index) => {
-                    return await prisma.technology.update({
-                        where: { id },
-                        data: { order: index },
-                    });
-                });
-
-                await Promise.all(promises);
-                return { data: ids };
+                return await updateOrderHandler(body, prisma.technology);
             }
             return await updateHandler(body, prisma.technology);
         }

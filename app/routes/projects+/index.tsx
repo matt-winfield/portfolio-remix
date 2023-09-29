@@ -1,8 +1,8 @@
-import { Button } from '#app/components/ui/button.tsx';
-import { prisma } from '#app/utils/db.server.ts';
 import { Link, useLoaderData } from '@remix-run/react';
 import { json } from '@remix-run/server-runtime';
 import { motion } from 'framer-motion';
+import { Button } from '#app/components/ui/button.tsx';
+import { prisma } from '#app/utils/db.server.ts';
 
 const fallbackImagePath = '/img/placeholder.jpg';
 
@@ -19,6 +19,9 @@ export const loader = async () => {
                     altText: true,
                 },
             },
+        },
+        orderBy: {
+            order: 'asc',
         },
     });
 

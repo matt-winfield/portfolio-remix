@@ -1,4 +1,3 @@
-import { prisma } from '#app/utils/db.server.ts';
 import {
     createHandler,
     defaultHandler,
@@ -7,6 +6,8 @@ import {
     updateHandler,
     type RaPayload,
 } from 'ra-data-simple-prisma';
+import { prisma } from '#app/utils/db.server.ts';
+import { updateOrderHandler } from './utils/update-order.tsx';
 
 export const projectHandler = async (body: RaPayload) => {
     switch (body.method) {
@@ -23,7 +24,14 @@ export const projectHandler = async (body: RaPayload) => {
             });
         }
         case 'getList': {
-            return await getListHandler(body, prisma.project, {
+            const bodyWithSort = {
+                ...body,
+                params: {
+                    ...body.params,
+                    sort: { field: 'order', order: 'asc' },
+                },
+            };
+            return await getListHandler(bodyWithSort, prisma.project, {
                 include: {
                     images: {
                         select: {
@@ -69,6 +77,10 @@ export const projectHandler = async (body: RaPayload) => {
             });
         }
         case 'update': {
+            if (body.params.id?.toLowerCase() === 'list') {
+                return await updateOrderHandler(body, prisma.project);
+            }
+
             return await updateHandler(body, prisma.project, {
                 set: {
                     imageIds: {
