@@ -44,12 +44,12 @@ export default function Projects() {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
-                className="flex flex-wrap items-center justify-center gap-2"
+                className="flex flex-wrap items-center justify-center gap-5"
             >
                 {data.projects.map((project) => (
                     <div
                         key={project.id}
-                        className="flex w-fit flex-col items-center rounded-md bg-card px-3 py-2 transition hover:scale-110"
+                        className="group relative flex w-fit flex-col items-center rounded-md bg-card px-3 py-2 transition hover:scale-110"
                     >
                         <motion.div
                             className="my-2 w-fit text-3xl"
@@ -68,34 +68,36 @@ export default function Projects() {
                                 alt={project.images[0]?.altText ?? project.name}
                             />
                         </div>
-                        <div className="my-1 px-2">
-                            <Button className="text-xl" asChild>
-                                <Link to={`/projects/${project.id}`}>
-                                    Details
-                                </Link>
-                            </Button>
-                        </div>
-                        <div className="my-1 flex flex-row gap-2 px-2">
-                            {project.codeUrl && (
-                                <Button asChild>
-                                    <a
-                                        href={project.codeUrl}
-                                        className="text-xl"
-                                    >
-                                        Code
-                                    </a>
+                        <div className="absolute bottom-0 flex w-full flex-col items-center bg-background/90 transition-opacity group-hover:opacity-100 sm:opacity-80">
+                            <div className="my-1 px-2">
+                                <Button className="text-xl" asChild>
+                                    <Link to={`/projects/${project.id}`}>
+                                        Details
+                                    </Link>
                                 </Button>
-                            )}
-                            {project.demoUrl && (
-                                <Button asChild>
-                                    <a
-                                        href={project.demoUrl}
-                                        className="text-xl"
-                                    >
-                                        Demo
-                                    </a>
-                                </Button>
-                            )}
+                            </div>
+                            <div className="my-1 flex flex-row gap-2 px-2">
+                                {project.codeUrl && (
+                                    <Button asChild>
+                                        <a
+                                            href={project.codeUrl}
+                                            className="text-xl"
+                                        >
+                                            Code
+                                        </a>
+                                    </Button>
+                                )}
+                                {project.demoUrl && (
+                                    <Button asChild>
+                                        <a
+                                            href={project.demoUrl}
+                                            className="text-xl"
+                                        >
+                                            Demo
+                                        </a>
+                                    </Button>
+                                )}
+                            </div>
                         </div>
                     </div>
                 ))}
