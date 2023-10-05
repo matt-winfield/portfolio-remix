@@ -227,6 +227,11 @@ function Document({
                     name="viewport"
                     content="width=device-width,initial-scale=1"
                 />
+                <script
+                    defer
+                    data-domain="matt-winfield.com"
+                    src="https://plausible.io/js/script.js"
+                ></script>
                 <Links />
             </head>
             <body className="bg-background text-foreground">
