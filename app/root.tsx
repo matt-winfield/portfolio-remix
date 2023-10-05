@@ -230,7 +230,7 @@ function Document({
                 <script
                     defer
                     data-domain="matt-winfield.com"
-                    src="https://plausible.io/js/script.js"
+                    src="https://plausible.io/js/script.outbound-links.js"
                 ></script>
                 <Links />
             </head>
