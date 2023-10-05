@@ -14,6 +14,7 @@ export const ProjectEdit = () => (
         <SimpleForm>
             <TextInput disabled source="id" />
             <TextInput source="name" validate={[required()]} />
+            <TextInput source="slug" />
             <RichTextInput source="description" className="rich-text" />
             <TextInput source="codeUrl" />
             <TextInput source="demoUrl" />

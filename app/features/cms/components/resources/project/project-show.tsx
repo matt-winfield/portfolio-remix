@@ -15,6 +15,7 @@ export const ProjectShow = () => (
     <Show>
         <SimpleShowLayout>
             <TextField source="name" />
+            <TextField source="slug" />
             <RichTextField source="description" className="rich-text" />
             <UrlField source="codeUrl" />
             <UrlField source="demoUrl" />

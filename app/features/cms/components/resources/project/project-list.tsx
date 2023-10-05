@@ -14,6 +14,7 @@ export const ProjectList = () => (
     <List pagination={false}>
         <ReorderableDataGrid rowClick="show">
             <TextField source="name" sortable={false} />
+            <TextField source="slug" sortable={false} />
             <RichTextField
                 source="description"
                 className="rich-text"

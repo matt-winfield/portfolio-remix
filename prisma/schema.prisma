@@ -41,6 +41,9 @@ model Project {
     demoUrl      String?
     images       Image[]
     order        Int?         @default(0)
+    slug         String?      @unique
+
+    @@index([slug])
 }
 
 model Technology {

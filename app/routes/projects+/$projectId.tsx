@@ -1,16 +1,17 @@
-import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx';
-import { Button } from '#app/components/ui/button.tsx';
-import { IconList } from '#app/features/icons/components/icon-list.tsx';
-import richtextStylesUrl from '#app/styles/richtext.css';
-import { prisma } from '#app/utils/db.server.ts';
-import { invariantResponse } from '#app/utils/misc.tsx';
 import { useLoaderData } from '@remix-run/react';
+import { redirect } from '@remix-run/router';
 import {
     json,
     type DataFunctionArgs,
     type LinksFunction,
 } from '@remix-run/server-runtime';
 import { motion } from 'framer-motion';
+import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx';
+import { Button } from '#app/components/ui/button.tsx';
+import { IconList } from '#app/features/icons/components/icon-list.tsx';
+import richtextStylesUrl from '#app/styles/richtext.css';
+import { prisma } from '#app/utils/db.server.ts';
+import { invariantResponse } from '#app/utils/misc.tsx';
 
 export const links: LinksFunction = () => [
     { rel: 'stylesheet', href: richtextStylesUrl },
@@ -20,12 +21,13 @@ export const loader = async ({ params }: DataFunctionArgs) => {
     const { projectId } = params;
     invariantResponse(projectId, 'Missing projectId');
 
-    const project = await prisma.project.findUnique({
+    const project = await prisma.project.findFirst({
         where: {
-            id: projectId,
+            OR: [{ id: projectId }, { slug: projectId }],
         },
         select: {
             id: true,
+            slug: true,
             name: true,
             codeUrl: true,
             demoUrl: true,
@@ -47,6 +49,11 @@ export const loader = async ({ params }: DataFunctionArgs) => {
     });
 
     invariantResponse(project, 'Project not found', { status: 404 });
+
+    // Redirect to the slug if the project has one
+    if (project.slug !== null && project.slug !== projectId) {
+        throw redirect(`/projects/${encodeURIComponent(project.slug)}`);
+    }
 
     return json({ project });
 };

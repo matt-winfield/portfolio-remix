@@ -10,6 +10,7 @@ export const loader = async () => {
     const projects = await prisma.project.findMany({
         select: {
             id: true,
+            slug: true,
             name: true,
             codeUrl: true,
             demoUrl: true,
@@ -71,7 +72,15 @@ export default function Projects() {
                         <div className="absolute bottom-0 flex w-full flex-col items-center bg-background/90 transition-opacity group-hover:opacity-100 sm:opacity-80">
                             <div className="my-1 px-2">
                                 <Button className="text-xl" asChild>
-                                    <Link to={`/projects/${project.id}`}>
+                                    <Link
+                                        to={`/projects/${
+                                            project.slug
+                                                ? encodeURIComponent(
+                                                      project.slug,
+                                                  )
+                                                : project.id
+                                        }`}
+                                    >
                                         Details
                                     </Link>
                                 </Button>
