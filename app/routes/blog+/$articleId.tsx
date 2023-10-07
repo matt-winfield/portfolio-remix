@@ -58,11 +58,11 @@ export default function Article() {
 
     return (
         <div className="container">
-            <h1 className="mb-3 text-5xl">{data.article.title}</h1>
+            <h1 className="mb-3 text-center text-5xl">{data.article.title}</h1>
             <div className="flex flex-col items-center">
                 <div className="w-4/5">
                     <div
-                        className="rich-text"
+                        className="rich-text text-lg"
                         dangerouslySetInnerHTML={{
                             __html: data.article.content,
                         }}
