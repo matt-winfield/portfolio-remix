@@ -1,4 +1,3 @@
-import { useOptionalUser } from '#app/utils/user.ts';
 import {
     Admin,
     EditGuesser,
@@ -7,8 +6,13 @@ import {
     defaultDarkTheme,
     defaultTheme,
 } from 'react-admin';
+import { useOptionalUser } from '#app/utils/user.ts';
 import { authProvider } from '../providers/auth-provider.tsx';
 import { dataProvider } from '../providers/data-provider.tsx';
+import { ArticleCreate } from './resources/article/article-create.tsx';
+import { ArticleEdit } from './resources/article/article-edit.tsx';
+import { ArticleList } from './resources/article/article-list.tsx';
+import { ArticleShow } from './resources/article/article-show.tsx';
 import { ExperienceCreate } from './resources/experience/experience-create.tsx';
 import { ExperienceEdit } from './resources/experience/experience-edit.tsx';
 import { ExperienceList } from './resources/experience/experience-list.tsx';
@@ -82,6 +86,14 @@ const App = () => {
                 edit={UserEdit}
                 create={UserCreate}
                 recordRepresentation={(user) => user.username ?? user.email}
+            />
+            <Resource
+                name="Article"
+                list={ArticleList}
+                show={ArticleShow}
+                edit={ArticleEdit}
+                create={ArticleCreate}
+                recordRepresentation="title"
             />
             <Resource
                 name="Project"

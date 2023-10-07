@@ -1,6 +1,18 @@
 .rich-text {
+    * {
+        margin: unset;
+    }
+
     a {
         text-decoration: underline;
         @apply text-accent-foreground;
+    }
+
+    code {
+        display: block;
+        @apply bg-card;
+        @apply p-2;
+        @apply rounded;
+        @apply my-3;
     }
 }

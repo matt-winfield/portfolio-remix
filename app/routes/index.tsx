@@ -1,7 +1,8 @@
-import { Hero } from '#app/features/hero/components/hero.tsx';
 import { Link } from '@remix-run/react';
 import { motion } from 'framer-motion';
 import { forwardRef, type ComponentProps } from 'react';
+import { blogEnabled } from '#app/features/blog/blog-config.tsx';
+import { Hero } from '#app/features/hero/components/hero.tsx';
 
 const StyledLink = forwardRef<HTMLAnchorElement, ComponentProps<typeof Link>>(
     ({ className, ...props }, ref) => (
@@ -37,6 +38,11 @@ export default function Index() {
                 animate="visible"
                 className="absolute bottom-10 left-1/2 right-0 z-10 flex w-full -translate-x-1/2 flex-wrap justify-center gap-x-6 gap-y-1 py-5 md:bottom-auto md:left-auto md:top-1/2 md:w-fit md:-translate-y-1/2 md:flex-col md:items-end md:gap-y-6 md:p-0"
             >
+                {blogEnabled && (
+                    <MotionLink variants={linkVariants} to="/blog">
+                        <motion.div>Blog</motion.div>
+                    </MotionLink>
+                )}
                 <MotionLink variants={linkVariants} to="/projects">
                     <motion.div layoutId="projects">Projects</motion.div>
                 </MotionLink>

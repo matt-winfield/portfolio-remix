@@ -270,7 +270,12 @@ function App() {
                             'z-10 flex w-screen items-center py-6',
                         )}
                     >
-                        <nav className="container flex flex-1 items-center justify-between">
+                        <nav
+                            className={cn(
+                                'flex flex-1 items-center justify-between',
+                                isOnIndexPage && 'container',
+                            )}
+                        >
                             {isOnIndexPage && (
                                 <ThemeSwitch
                                     userPreference={
