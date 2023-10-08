@@ -50,13 +50,33 @@ export const articleHandler = async (body: RaPayload) => {
             });
         }
         case 'update': {
-            return await updateHandler(body, prisma.article, {
+            const id = body.params.id as string;
+            const publishedAt = body.params.previousData.publishedAt as
+                | string
+                | null;
+            const hasPublished =
+                body.params.data.draft === false && publishedAt === null;
+
+            const result = await updateHandler(body, prisma.article, {
                 set: {
                     imageIds: {
                         images: 'id',
                     },
                 },
             });
+
+            if (hasPublished) {
+                await prisma.article.update({
+                    where: {
+                        id,
+                    },
+                    data: {
+                        publishedAt: new Date(),
+                    },
+                });
+            }
+
+            return result;
         }
         default:
             return await defaultHandler(body, prisma);

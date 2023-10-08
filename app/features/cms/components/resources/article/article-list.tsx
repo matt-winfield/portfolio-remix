@@ -1,6 +1,7 @@
 import {
     BooleanField,
     Datagrid,
+    DateField,
     ImageField,
     List,
     ReferenceArrayField,
@@ -16,6 +17,8 @@ export const ArticleList = () => (
             <BooleanField source="draft" />
             <TextField source="description" />
             <TextField source="tags" />
+            <DateField source="publishedAt" />
+            <DateField source="updatedAt" />
             <ReferenceArrayField
                 label="Images"
                 reference="image"
