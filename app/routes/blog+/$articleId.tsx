@@ -56,12 +56,63 @@ export const loader = async ({ request, params }: DataFunctionArgs) => {
         throw redirect(`/blog/${article.slug}`);
     }
 
-    return json({ article });
+    return json({ article, url: request.url });
 };
 
-export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
-    { title: `${data?.article.title ?? 'Blog Article'} | Matt Winfield` },
-];
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
+    if (!data) return;
+    const url = new URL(data.url);
+    const baseUrl = `${url.protocol}//${url.host}`;
+    const urlWithoutQuery = `${baseUrl}${url.pathname}`;
+    const fallbackImage = `${baseUrl}/img/placeholder.jpg`;
+
+    return [
+        { title: `${data.article.title} | Matt Winfield` },
+        {
+            property: 'og:title',
+            content: `${data.article.title}`,
+        },
+        {
+            property: 'og:description',
+            content: data.article.description ?? 'An article by Matt Winfield',
+        },
+        {
+            property: 'og:image',
+            content:
+                data.article.images.length > 0
+                    ? `${baseUrl}/resources/images/${data.article.images[0].id}`
+                    : fallbackImage,
+        },
+        {
+            property: 'og:url',
+            content: urlWithoutQuery,
+        },
+        {
+            property: 'og:type',
+            content: 'article',
+        },
+        {
+            property: 'article:published_time',
+            content: data.article.publishedAt,
+        },
+        {
+            property: 'article:modified_time',
+            content: data.article.updatedAt,
+        },
+        {
+            property: 'article:author',
+            content: 'Matt Winfield',
+        },
+        {
+            property: 'article:section',
+            content: 'Technology',
+        },
+        {
+            property: 'article:tag',
+            content: data.article.tags?.split(' ') ?? [],
+        },
+    ];
+};
 
 const wordsPerMinute = 200;
 
