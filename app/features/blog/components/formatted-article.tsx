@@ -1,7 +1,7 @@
 import hljs from 'highlight.js/lib/common';
 import { type HTMLProps, useMemo } from 'react';
 
-type HtmlWithCodeBlockProps = HTMLProps<HTMLDivElement> & {
+type FormattedArticleProps = HTMLProps<HTMLDivElement> & {
     html: string;
 };
 
@@ -14,10 +14,7 @@ const decodeHtml = (html: string) => {
         .replaceAll('&quot;', '"');
 };
 
-export const HtmlWithCodeBlock = ({
-    html,
-    ...props
-}: HtmlWithCodeBlockProps) => {
+export const FormattedArticle = ({ html, ...props }: FormattedArticleProps) => {
     const formattedHtml = useMemo(() => {
         const codeBlockRegex =
             /<pre><code class="language-([a-z]+)">([\s\S]+?)<\/code><\/pre>/g;
