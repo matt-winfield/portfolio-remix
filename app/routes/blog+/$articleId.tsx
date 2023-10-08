@@ -1,4 +1,4 @@
-import { useLoaderData } from '@remix-run/react';
+import { type V2_MetaFunction, useLoaderData } from '@remix-run/react';
 import { redirect } from '@remix-run/router';
 import {
     json,
@@ -58,6 +58,10 @@ export const loader = async ({ request, params }: DataFunctionArgs) => {
 
     return json({ article });
 };
+
+export const meta: V2_MetaFunction<typeof loader> = ({ data }) => [
+    { title: `${data?.article.title ?? 'Blog Article'} | Matt Winfield` },
+];
 
 const wordsPerMinute = 200;
 

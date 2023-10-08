@@ -3,9 +3,12 @@ import {
     type DataFunctionArgs,
     type V2_MetaFunction,
 } from '@remix-run/node';
-import { Link, useLoaderData } from '@remix-run/react';
+import { Link, useFetcher, useLoaderData } from '@remix-run/react';
 import { format } from 'date-fns';
 import { DateTime } from 'luxon';
+import { useEffect, useRef, useState } from 'react';
+import { useIntersection } from 'react-use';
+import { Spinner } from '#app/components/spinner.tsx';
 import { blogEnabled } from '#app/features/blog/blog-config.tsx';
 import { TagList } from '#app/features/blog/components/tag-list.tsx';
 import { getUser } from '#app/utils/auth.server.ts';
@@ -18,6 +21,9 @@ export const loader = async ({ request }: DataFunctionArgs) => {
 
     const user = await getUser(request);
     const showDrafts = user?.roles?.some((role) => role.name == 'admin');
+
+    const page = Number(new URL(request.url).searchParams.get('page')) || 1;
+    const articlesPerPage = 20;
 
     const articles = await prisma.article.findMany({
         where: {
@@ -35,6 +41,8 @@ export const loader = async ({ request }: DataFunctionArgs) => {
         orderBy: {
             publishedAt: 'desc',
         },
+        skip: (page - 1) * articlesPerPage,
+        take: articlesPerPage,
     });
 
     return json({ articles });
@@ -43,14 +51,49 @@ export const loader = async ({ request }: DataFunctionArgs) => {
 export const meta: V2_MetaFunction<typeof loader> = () => {
     return [
         {
-            title: 'Matt Winfield - Blog',
+            title: 'Blog | Matt Winfield',
             description: "Matt Winfield's blog",
         },
     ];
 };
 
 export default function Blog() {
-    const data = useLoaderData<typeof loader>();
+    const initialData = useLoaderData<typeof loader>();
+    const [articles, setArticles] = useState(initialData.articles);
+    const [page, setPage] = useState(2); // Start at page 2 because we've already loaded page 1
+    const [reachedEnd, setReachedEnd] = useState(false);
+    const fetcher = useFetcher<typeof loader>();
+
+    const intersectionRef = useRef(null);
+    const intersection = useIntersection(intersectionRef, {
+        root: null,
+        rootMargin: '100px', // Start fetching slightly before reaching end of screen
+    });
+
+    useEffect(() => {
+        if (
+            intersection &&
+            intersection.isIntersecting &&
+            fetcher.state === 'idle' &&
+            !reachedEnd
+        ) {
+            fetcher.load(`/blog?page=${page}`);
+            setPage((page) => page + 1);
+        }
+    }, [intersection, fetcher, page, reachedEnd]);
+
+    useEffect(() => {
+        const newData = fetcher.data;
+        if (!newData) return;
+
+        if (newData.articles.length === 0) {
+            setReachedEnd(true);
+            return;
+        }
+
+        setArticles((articles) => [...articles, ...newData.articles]);
+    }, [fetcher.data]);
+
     const startOfCareer = new Date('2018-09-03');
     const now = new Date();
     const experienceDuration = DateTime.fromJSDate(now).diff(
@@ -77,7 +120,7 @@ export default function Blog() {
                 </p>
             </div>
             <div className="my-3 flex w-full max-w-3xl flex-col gap-2">
-                {data.articles.map((article) => (
+                {articles.map((article) => (
                     <Link
                         to={`/blog/${article.slug ?? article.id}`}
                         key={article.id}
@@ -104,6 +147,13 @@ export default function Blog() {
                         {article.tags && <TagList tags={article.tags} />}
                     </Link>
                 ))}
+                <div ref={intersectionRef} />
+                <div className="flex justify-center">
+                    <Spinner
+                        showSpinner={fetcher.state !== 'idle'}
+                        className="static"
+                    />
+                </div>
             </div>
         </div>
     );
