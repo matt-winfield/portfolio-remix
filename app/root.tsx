@@ -262,7 +262,7 @@ function App() {
 
     return (
         <Document nonce={nonce} theme={theme} env={data.ENV}>
-            <div className="flex h-screen flex-col justify-between">
+            <div className="flex min-h-screen flex-col justify-between">
                 {!isOnCmsPage && (
                     <header
                         className={cn(
