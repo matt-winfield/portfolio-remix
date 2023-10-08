@@ -1,4 +1,6 @@
-import { RichTextInput } from 'ra-input-rich-text';
+import CodeBlockLowLight from '@tiptap/extension-code-block-lowlight';
+import { common, createLowlight } from 'lowlight';
+import { DefaultEditorOptions, RichTextInput } from 'ra-input-rich-text';
 import {
     BooleanInput,
     Edit,
@@ -9,8 +11,10 @@ import {
     required,
 } from 'react-admin';
 
+const lowlight = createLowlight(common);
+
 export const ArticleEdit = () => (
-    <Edit>
+    <Edit mutationMode="optimistic">
         <SimpleForm>
             <TextInput disabled source="id" />
             <TextInput source="title" validate={[required()]} />
@@ -18,7 +22,19 @@ export const ArticleEdit = () => (
             <TextInput source="description" />
             <TextInput source="tags" />
             <BooleanInput source="draft" label="Draft" />
-            <RichTextInput source="content" className="rich-text" />
+            <RichTextInput
+                source="content"
+                className="rich-text"
+                editorOptions={{
+                    ...DefaultEditorOptions,
+                    extensions: [
+                        ...(DefaultEditorOptions.extensions ?? []),
+                        CodeBlockLowLight.configure({
+                            lowlight,
+                        }),
+                    ],
+                }}
+            />
             <ReferenceArrayInput
                 label="Images"
                 reference="image"

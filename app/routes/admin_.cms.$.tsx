@@ -1,16 +1,18 @@
-import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx';
-import { Button } from '#app/components/ui/button.tsx';
-import App from '#app/features/cms/components/admin-page.tsx';
-import richtextStylesUrl from '#app/styles/richtext.css';
-import { requireUserWithRole } from '#app/utils/permissions.ts';
 import { Form, type V2_MetaFunction } from '@remix-run/react';
 import {
     type DataFunctionArgs,
     type LinksFunction,
 } from '@remix-run/server-runtime';
+import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx';
+import { Button } from '#app/components/ui/button.tsx';
+import App from '#app/features/cms/components/admin-page.tsx';
+import richtextStylesUrl from '#app/styles/richtext.css';
+import syntaxHighlightingStylesUrl from '#app/styles/syntax-highlighting.css';
+import { requireUserWithRole } from '#app/utils/permissions.ts';
 
 export const links: LinksFunction = () => [
     { rel: 'stylesheet', href: richtextStylesUrl },
+    { rel: 'stylesheet', href: syntaxHighlightingStylesUrl },
 ];
 
 export const loader = async ({ request }: DataFunctionArgs) => {
