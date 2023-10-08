@@ -8,6 +8,19 @@
         @apply text-accent-foreground;
     }
 
+    /* Remove Tailwind CSS reset for these elements */
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    ul,
+    ol,
+    li {
+        all: revert;
+    }
+
     p {
         @apply my-2;
     }
