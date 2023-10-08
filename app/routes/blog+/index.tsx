@@ -6,6 +6,7 @@ import {
 import { Link, useLoaderData } from '@remix-run/react';
 import { DateTime } from 'luxon';
 import { blogEnabled } from '#app/features/blog/blog-config.tsx';
+import { TagList } from '#app/features/blog/components/tag-list.tsx';
 import { getUser } from '#app/utils/auth.server.ts';
 import { prisma } from '#app/utils/db.server.ts';
 
@@ -29,6 +30,9 @@ export const loader = async ({ request }: DataFunctionArgs) => {
             publishedAt: true,
             description: true,
             tags: true,
+        },
+        orderBy: {
+            publishedAt: 'desc',
         },
     });
 
@@ -78,26 +82,24 @@ export default function Blog() {
                         key={article.id}
                         className="group rounded bg-card px-5 py-3"
                     >
-                        <div className="text-xl transition-colors group-hover:text-accent-foreground">
-                            {article.title}
+                        <div className="flex flex-col sm:flex-row">
+                            <div className="flex-1 text-xl transition-colors group-hover:text-accent-foreground">
+                                {article.title}
+                            </div>
+                            {article.publishedAt && (
+                                <div className="text-sm text-muted-foreground">
+                                    {new Date(
+                                        article.publishedAt,
+                                    ).toLocaleDateString()}
+                                </div>
+                            )}
                         </div>
                         {article.description && (
                             <div className="text-muted-foreground">
                                 {article.description}
                             </div>
                         )}
-                        {article.tags && (
-                            <div className="flex flex-wrap gap-2">
-                                {article.tags.split(' ').map((tag) => (
-                                    <div
-                                        key={tag}
-                                        className="rounded bg-card-foreground px-2 py-1"
-                                    >
-                                        {tag}
-                                    </div>
-                                ))}
-                            </div>
-                        )}
+                        {article.tags && <TagList tags={article.tags} />}
                     </Link>
                 ))}
             </div>

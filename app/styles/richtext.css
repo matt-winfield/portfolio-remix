@@ -8,6 +8,10 @@
         @apply text-accent-foreground;
     }
 
+    p {
+        @apply my-2;
+    }
+
     code {
         @apply bg-card;
         @apply py-1;
@@ -19,6 +23,8 @@
     pre code {
         display: block;
         @apply p-2;
+        overflow: hidden;
+        overflow-x: auto;
     }
 
     img {
