@@ -5,6 +5,7 @@ import {
     type DataFunctionArgs,
     type LinksFunction,
 } from '@remix-run/server-runtime';
+import { format } from 'date-fns';
 import { FormattedArticle } from '#app/features/blog/components/formatted-article.tsx';
 import { TagList } from '#app/features/blog/components/tag-list.tsx';
 import richtextStylesUrl from '#app/styles/richtext.css';
@@ -64,9 +65,9 @@ export default function Article() {
     const data = useLoaderData<typeof loader>();
 
     const publicationDate = data.article.publishedAt
-        ? new Date(data.article.publishedAt).toLocaleDateString()
+        ? format(new Date(data.article.publishedAt), 'd MMM yyyy')
         : null;
-    const updateDate = new Date(data.article.updatedAt).toLocaleDateString();
+    const updateDate = format(new Date(data.article.updatedAt), 'd MMM yyyy');
 
     const wordCount = data.article.content.split(/\s+/).length;
     const minutesToRead = Math.ceil(wordCount / wordsPerMinute);
@@ -83,10 +84,10 @@ export default function Article() {
                 <div className="w-full sm:w-4/5">
                     <div className="mb-3 text-sm text-muted-foreground">
                         {publicationDate && (
-                            <div>Published on {publicationDate}</div>
+                            <div>Published {publicationDate}</div>
                         )}
                         {publicationDate !== updateDate && (
-                            <div>Updated on {updateDate}</div>
+                            <div>Updated {updateDate}</div>
                         )}
                         <div>{minutesToRead} minute read</div>
                     </div>

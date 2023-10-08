@@ -4,6 +4,7 @@ import {
     type V2_MetaFunction,
 } from '@remix-run/node';
 import { Link, useLoaderData } from '@remix-run/react';
+import { format } from 'date-fns';
 import { DateTime } from 'luxon';
 import { blogEnabled } from '#app/features/blog/blog-config.tsx';
 import { TagList } from '#app/features/blog/components/tag-list.tsx';
@@ -88,9 +89,10 @@ export default function Blog() {
                             </div>
                             {article.publishedAt && (
                                 <div className="text-sm text-muted-foreground">
-                                    {new Date(
-                                        article.publishedAt,
-                                    ).toLocaleDateString()}
+                                    {format(
+                                        new Date(article.publishedAt),
+                                        'd MMM yyyy',
+                                    )}
                                 </div>
                             )}
                         </div>
