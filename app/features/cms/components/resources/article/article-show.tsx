@@ -1,5 +1,5 @@
 import {
-    ChipField,
+    BooleanField,
     ImageField,
     ReferenceArrayField,
     RichTextField,
@@ -7,17 +7,17 @@ import {
     SimpleShowLayout,
     SingleFieldList,
     TextField,
-    UrlField,
 } from 'react-admin';
 
-export const ProjectShow = () => (
+export const ArticleShow = () => (
     <Show>
         <SimpleShowLayout>
-            <TextField source="name" />
+            <TextField source="title" />
             <TextField source="slug" />
-            <RichTextField source="description" className="rich-text" />
-            <UrlField source="codeUrl" />
-            <UrlField source="demoUrl" />
+            <BooleanField source="draft" />
+            <TextField source="description" />
+            <TextField source="tags" />
+            <RichTextField source="content" className="rich-text" />
             <ReferenceArrayField
                 label="Images"
                 reference="image"
@@ -25,15 +25,6 @@ export const ProjectShow = () => (
             >
                 <SingleFieldList>
                     <ImageField source="src" />
-                </SingleFieldList>
-            </ReferenceArrayField>
-            <ReferenceArrayField
-                label="Technologies"
-                reference="technology"
-                source="technologyIds"
-            >
-                <SingleFieldList>
-                    <ChipField source="name" />
                 </SingleFieldList>
             </ReferenceArrayField>
         </SimpleShowLayout>

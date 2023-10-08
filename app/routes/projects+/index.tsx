@@ -50,10 +50,10 @@ export default function Projects() {
                 {data.projects.map((project) => (
                     <div
                         key={project.id}
-                        className="group relative flex w-fit flex-col items-center rounded-md bg-card px-3 py-2 transition hover:scale-110"
+                        className="group relative flex w-fit flex-col items-center rounded-md bg-card px-3 py-2 transition hover:scale-105"
                     >
                         <motion.div
-                            className="my-2 w-fit text-3xl"
+                            className="my-2 w-fit text-3xl transition-colors group-hover:text-accent-foreground"
                             layoutId={`${project.id}-title`}
                         >
                             {project.name}

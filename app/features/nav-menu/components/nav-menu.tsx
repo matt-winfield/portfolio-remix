@@ -1,6 +1,7 @@
 import { NavLink } from '@remix-run/react';
 import { motion } from 'framer-motion';
 import { type ComponentProps } from 'react';
+import { blogEnabled } from '#app/features/blog/blog-config.tsx';
 
 const StyledNavLink = ({
     children,
@@ -30,6 +31,7 @@ export const NavMenu = () => {
             className="flex w-full flex-wrap items-center justify-center gap-3 sm:gap-5"
         >
             <StyledNavLink to="/">Home</StyledNavLink>
+            {blogEnabled && <StyledNavLink to="/blog">Blog</StyledNavLink>}
             <StyledNavLink to="/projects">Projects</StyledNavLink>
             <StyledNavLink to="/skills">Skills</StyledNavLink>
             <StyledNavLink to="/experience">Experience</StyledNavLink>

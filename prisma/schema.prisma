@@ -46,6 +46,20 @@ model Project {
     @@index([slug])
 }
 
+model Article {
+    id          String    @id @default(cuid())
+    title       String
+    content     String
+    description String?
+    // Tags, space separated
+    tags        String?
+    images      Image[]
+    publishedAt DateTime?
+    updatedAt   DateTime  @default(now()) @updatedAt
+    slug        String?   @unique
+    draft       Boolean   @default(false)
+}
+
 model Technology {
     id       String    @id @default(cuid())
     name     String
@@ -81,6 +95,7 @@ model Image {
     updatedAt DateTime @updatedAt
 
     projects Project[]
+    articles Article[]
 }
 
 model Note {

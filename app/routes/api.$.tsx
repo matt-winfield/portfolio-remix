@@ -1,5 +1,6 @@
 import { json, type DataFunctionArgs } from '@remix-run/server-runtime';
 import { defaultHandler, type RaPayload } from 'ra-data-simple-prisma';
+import { articleHandler } from '#app/features/cms/resourceHandlers/articleHandler.tsx';
 import { imageHandler } from '#app/features/cms/resourceHandlers/imageHandler.tsx';
 import { noteHandler } from '#app/features/cms/resourceHandlers/noteHandler.tsx';
 import { noteImageHandler } from '#app/features/cms/resourceHandlers/noteImageHandler.tsx';
@@ -36,6 +37,10 @@ export const loader = async ({ request }: DataFunctionArgs) => {
         }
         case 'noteimage': {
             const result = await noteImageHandler(body);
+            return json(result);
+        }
+        case 'article': {
+            const result = await articleHandler(body);
             return json(result);
         }
     }
