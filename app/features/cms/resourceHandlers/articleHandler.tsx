@@ -55,7 +55,9 @@ export const articleHandler = async (body: RaPayload) => {
                 | string
                 | null;
             const hasPublished =
-                body.params.data.draft === false && publishedAt === null;
+                body.params.previousData.draft === false &&
+                body.params.data.draft === true &&
+                publishedAt === null;
 
             const result = await updateHandler(body, prisma.article, {
                 set: {
