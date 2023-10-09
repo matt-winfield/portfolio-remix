@@ -1,10 +1,10 @@
+import { faker } from '@faker-js/faker';
+import { expect, test } from '@playwright/test';
 import { signupEnabled } from '#app/features/signup/signup-config.ts';
 import { prisma } from '#app/utils/db.server.ts';
 import { invariant } from '#app/utils/misc.tsx';
 import { readEmail } from '#tests/mocks/utils.ts';
 import { createUser, insertNewUser } from '#tests/playwright-utils.ts';
-import { faker } from '@faker-js/faker';
-import { expect, test } from '@playwright/test';
 
 const urlRegex = /(?<url>https?:\/\/[^\s$.?#].[^\s]*)/;
 function extractUrl(text: string) {
