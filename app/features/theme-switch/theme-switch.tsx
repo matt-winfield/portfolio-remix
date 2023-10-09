@@ -26,9 +26,8 @@ export const ThemeSwitch = ({
     });
 
     const optimisticMode = useOptimisticThemeMode();
-    const mode = optimisticMode ?? userPreference ?? 'system';
-    const nextMode =
-        mode === 'system' ? 'light' : mode === 'light' ? 'dark' : 'system';
+    const mode = optimisticMode ?? userPreference ?? 'dark';
+    const nextMode = mode === 'light' ? 'dark' : 'light';
     const modeLabel = {
         light: (
             <Icon name="sun">
@@ -38,11 +37,6 @@ export const ThemeSwitch = ({
         dark: (
             <Icon name="moon">
                 <span className="sr-only">Dark</span>
-            </Icon>
-        ),
-        system: (
-            <Icon name="laptop">
-                <span className="sr-only">System</span>
             </Icon>
         ),
     };

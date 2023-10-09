@@ -2,19 +2,9 @@
  * This file contains utilities for using client hints for user preference which
  * are needed by the server, but are only known by the browser.
  */
-import { useRevalidator } from '@remix-run/react';
-import * as React from 'react';
 import { useRequestInfo } from './request-info.ts';
 
 export const clientHints = {
-    theme: {
-        cookieName: 'CH-prefers-color-scheme',
-        getValueCode: `window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'`,
-        fallback: 'dark',
-        transform(value: string) {
-            return value === 'dark' ? 'dark' : 'light';
-        },
-    },
     timeZone: {
         cookieName: 'CH-time-zone',
         getValueCode: `Intl.DateTimeFormat().resolvedOptions().timeZone`,
@@ -100,21 +90,6 @@ export function useHints() {
  * inaccurate value.
  */
 export function ClientHintCheck({ nonce }: { nonce: string }) {
-    const { revalidate } = useRevalidator();
-    React.useEffect(() => {
-        const themeQuery = window.matchMedia('(prefers-color-scheme: dark)');
-        function handleThemeChange() {
-            document.cookie = `${clientHints.theme.cookieName}=${
-                themeQuery.matches ? 'dark' : 'light'
-            }`;
-            revalidate();
-        }
-        themeQuery.addEventListener('change', handleThemeChange);
-        return () => {
-            themeQuery.removeEventListener('change', handleThemeChange);
-        };
-    }, [revalidate]);
-
     return (
         <script
             nonce={nonce}

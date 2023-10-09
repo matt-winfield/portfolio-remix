@@ -195,7 +195,7 @@ export async function action({ request }: DataFunctionArgs) {
 function Document({
     children,
     nonce,
-    theme = 'light',
+    theme = 'dark',
     env = {},
 }: {
     children: React.ReactNode;
