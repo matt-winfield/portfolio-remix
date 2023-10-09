@@ -11,8 +11,6 @@ export const providerNames = [GITHUB_PROVIDER_NAME] as const;
 export const ProviderNameSchema = z.enum(providerNames);
 export type ProviderName = z.infer<typeof ProviderNameSchema>;
 
-export const enabledProviders: ProviderName[] = [];
-
 export const providerLabels: Record<ProviderName, string> = {
     [GITHUB_PROVIDER_NAME]: 'GitHub',
 } as const;

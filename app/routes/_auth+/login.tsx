@@ -13,6 +13,7 @@ import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx';
 import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx';
 import { Spacer } from '#app/components/spacer.tsx';
 import { StatusButton } from '#app/components/ui/status-button.tsx';
+import { enabledProviders } from '#app/features/auth/enabled-providers.ts';
 import { signupEnabled } from '#app/features/signup/signup-config.ts';
 import { twoFAVerificationType } from '#app/routes/settings+/profile.two-factor.tsx';
 import {
@@ -21,10 +22,7 @@ import {
     requireAnonymous,
     sessionKey,
 } from '#app/utils/auth.server.ts';
-import {
-    ProviderConnectionForm,
-    enabledProviders,
-} from '#app/utils/connections.tsx';
+import { ProviderConnectionForm } from '#app/utils/connections.tsx';
 import { prisma } from '#app/utils/db.server.ts';
 import {
     cn,
