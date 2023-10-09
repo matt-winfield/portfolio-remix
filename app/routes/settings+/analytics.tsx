@@ -15,6 +15,11 @@ export default function Analytics() {
                     </h1>
                     <div className="my-5 flex flex-col items-center justify-center">
                         <div>
+                            In order to improve the site, we use
+                            privacy-friendly analytics. You can choose to
+                            opt-out of this.
+                        </div>
+                        <div>
                             You currently{' '}
                             {plausibleIgnore === 'true' ? (
                                 <span className="text-foreground-danger">
