@@ -14,12 +14,12 @@ export default function Analytics() {
                         Control analytics settings
                     </h1>
                     <div className="my-5 flex flex-col items-center justify-center">
-                        <div>
+                        <div className="my-2 text-center">
                             In order to improve the site, we use
                             privacy-friendly analytics. You can choose to
                             opt-out of this.
                         </div>
-                        <div>
+                        <div className="my-2 text-center">
                             You currently{' '}
                             {plausibleIgnore === 'true' ? (
                                 <span className="text-foreground-danger">
@@ -31,7 +31,7 @@ export default function Analytics() {
                             have analytics enabled.
                         </div>
                         <Button
-                            className="my-2"
+                            className="my-4"
                             onClick={() => {
                                 if (plausibleIgnore === 'true') {
                                     removePlausibleIgnore();
