@@ -1,28 +1,3 @@
-import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx';
-import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx';
-import { Spacer } from '#app/components/spacer.tsx';
-import { StatusButton } from '#app/components/ui/status-button.tsx';
-import { twoFAVerificationType } from '#app/routes/settings+/profile.two-factor.tsx';
-import {
-    getUserId,
-    login,
-    requireAnonymous,
-    sessionKey,
-} from '#app/utils/auth.server.ts';
-import {
-    ProviderConnectionForm,
-    providerNames,
-} from '#app/utils/connections.tsx';
-import { prisma } from '#app/utils/db.server.ts';
-import {
-    combineResponseInits,
-    invariant,
-    useIsPending,
-} from '#app/utils/misc.tsx';
-import { sessionStorage } from '#app/utils/session.server.ts';
-import { redirectWithToast } from '#app/utils/toast.server.ts';
-import { PasswordSchema, UsernameSchema } from '#app/utils/user-validation.ts';
-import { verifySessionStorage } from '#app/utils/verification.server.ts';
 import { conform, useForm } from '@conform-to/react';
 import { getFieldsetConstraint, parse } from '@conform-to/zod';
 import {
@@ -34,8 +9,34 @@ import {
 import { Form, Link, useActionData, useSearchParams } from '@remix-run/react';
 import { safeRedirect } from 'remix-utils';
 import { z } from 'zod';
-import { getRedirectToUrl, type VerifyFunctionArgs } from './verify.tsx';
+import { GeneralErrorBoundary } from '#app/components/error-boundary.tsx';
+import { CheckboxField, ErrorList, Field } from '#app/components/forms.tsx';
+import { Spacer } from '#app/components/spacer.tsx';
+import { StatusButton } from '#app/components/ui/status-button.tsx';
 import { signupEnabled } from '#app/features/signup/signup-config.ts';
+import { twoFAVerificationType } from '#app/routes/settings+/profile.two-factor.tsx';
+import {
+    getUserId,
+    login,
+    requireAnonymous,
+    sessionKey,
+} from '#app/utils/auth.server.ts';
+import {
+    ProviderConnectionForm,
+    enabledProviders,
+} from '#app/utils/connections.tsx';
+import { prisma } from '#app/utils/db.server.ts';
+import {
+    cn,
+    combineResponseInits,
+    invariant,
+    useIsPending,
+} from '#app/utils/misc.tsx';
+import { sessionStorage } from '#app/utils/session.server.ts';
+import { redirectWithToast } from '#app/utils/toast.server.ts';
+import { PasswordSchema, UsernameSchema } from '#app/utils/user-validation.ts';
+import { verifySessionStorage } from '#app/utils/verification.server.ts';
+import { getRedirectToUrl, type VerifyFunctionArgs } from './verify.tsx';
 
 const verifiedTimeKey = 'verified-time';
 const unverifiedSessionIdKey = 'unverified-session-id';
@@ -337,8 +338,13 @@ export default function LoginPage() {
                                 </StatusButton>
                             </div>
                         </Form>
-                        <div className="mt-5 flex flex-col gap-5 border-t-2 border-border py-3">
-                            {providerNames.map((providerName) => (
+                        <div
+                            className={cn(
+                                'mt-5 flex flex-col gap-5 border-border py-3',
+                                enabledProviders.length > 0 && 'border-t-2',
+                            )}
+                        >
+                            {enabledProviders.map((providerName) => (
                                 <ProviderConnectionForm
                                     key={providerName}
                                     type="Login"

@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import { Authenticator } from 'remix-auth';
 import { safeRedirect } from 'remix-utils';
 import { providers } from './connections.server.ts';
+import { enabledProviders } from './connections.tsx';
 import { prisma } from './db.server.ts';
 import { combineHeaders, downloadFile } from './misc.tsx';
 import { type ProviderUser } from './providers/provider.ts';
@@ -18,7 +19,9 @@ export const sessionKey = 'sessionId';
 export const authenticator = new Authenticator<ProviderUser>(sessionStorage);
 
 for (const [providerName, provider] of Object.entries(providers)) {
-    authenticator.use(provider.getAuthStrategy(), providerName);
+    if (enabledProviders.includes(providerName)) {
+        authenticator.use(provider.getAuthStrategy(), providerName);
+    }
 }
 
 export async function getUserId(request: Request) {
