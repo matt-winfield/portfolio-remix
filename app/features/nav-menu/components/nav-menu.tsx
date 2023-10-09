@@ -32,10 +32,9 @@ export const NavMenu = () => {
         >
             <StyledNavLink to="/">Home</StyledNavLink>
             {blogEnabled && <StyledNavLink to="/blog">Blog</StyledNavLink>}
+            <StyledNavLink to="/about">About</StyledNavLink>
             <StyledNavLink to="/projects">Projects</StyledNavLink>
             <StyledNavLink to="/skills">Skills</StyledNavLink>
-            <StyledNavLink to="/experience">Experience</StyledNavLink>
-            <StyledNavLink to="/qualifications">Qualifications</StyledNavLink>
         </motion.div>
     );
 };

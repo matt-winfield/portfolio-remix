@@ -43,19 +43,14 @@ export default function Index() {
                         <motion.div>Blog</motion.div>
                     </MotionLink>
                 )}
+                <MotionLink variants={linkVariants} to="/about">
+                    <motion.div layoutId="about-title">About</motion.div>
+                </MotionLink>
                 <MotionLink variants={linkVariants} to="/projects">
                     <motion.div layoutId="projects">Projects</motion.div>
                 </MotionLink>
                 <MotionLink variants={linkVariants} to="/skills">
                     <motion.div layoutId="skills">Skills</motion.div>
-                </MotionLink>
-                <MotionLink variants={linkVariants} to="/experience">
-                    <motion.div layoutId="experience">Experience</motion.div>
-                </MotionLink>
-                <MotionLink variants={linkVariants} to="/qualifications">
-                    <motion.div layoutId="qualifications">
-                        Qualifications
-                    </motion.div>
                 </MotionLink>
             </motion.div>
         </main>

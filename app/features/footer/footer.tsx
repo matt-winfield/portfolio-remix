@@ -21,7 +21,7 @@ type FooterProps = {
 
 export const Footer = ({ theme, user }: FooterProps) => {
     return (
-        <div className="mb-2 mt-3 flex flex-col items-center justify-between gap-2 px-5 text-muted-foreground sm:flex-row">
+        <div className="mb-2 mt-10 flex flex-col items-center justify-between gap-2 px-5 text-muted-foreground sm:flex-row">
             <div className="flex items-center gap-5">
                 <Link
                     to="/privacy-policy"

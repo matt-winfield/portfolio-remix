@@ -11,6 +11,7 @@ import { useIntersection } from 'react-use';
 import { Spinner } from '#app/components/spinner.tsx';
 import { blogEnabled } from '#app/features/blog/blog-config.tsx';
 import { TagList } from '#app/features/blog/components/tag-list.tsx';
+import { startOfCareer } from '#app/features/experience/constants.ts';
 import { getUser } from '#app/utils/auth.server.ts';
 import { prisma } from '#app/utils/db.server.ts';
 
@@ -94,7 +95,6 @@ export default function Blog() {
         setArticles((articles) => [...articles, ...newData.articles]);
     }, [fetcher.data]);
 
-    const startOfCareer = new Date('2018-09-03');
     const now = new Date();
     const experienceDuration = DateTime.fromJSDate(now).diff(
         DateTime.fromJSDate(startOfCareer),
