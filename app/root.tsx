@@ -30,7 +30,7 @@ import { ThemeSwitch } from './features/theme-switch/theme-switch.tsx';
 import fontStylestylesheetUrl from './styles/font.css';
 import tailwindStylesheetUrl from './styles/tailwind.css';
 import { authenticator, getUserId } from './utils/auth.server.ts';
-import { ClientHintCheck, getHints, useHints } from './utils/client-hints.tsx';
+import { ClientHintCheck, getHints } from './utils/client-hints.tsx';
 import { getConfetti } from './utils/confetti.server.ts';
 import { prisma } from './utils/db.server.ts';
 import { getEnv } from './utils/env.server.ts';
@@ -165,7 +165,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
 };
 
 export const ThemeFormSchema = z.object({
-    theme: z.enum(['system', 'light', 'dark']),
+    theme: z.enum(['light', 'dark']),
 });
 
 export async function action({ request }: DataFunctionArgs) {
@@ -297,13 +297,12 @@ export default withSentry(App);
  * has not set a preference.
  */
 export function useTheme() {
-    const hints = useHints();
     const requestInfo = useRequestInfo();
     const optimisticMode = useOptimisticThemeMode();
     if (optimisticMode) {
-        return optimisticMode === 'system' ? hints.theme : optimisticMode;
+        return optimisticMode;
     }
-    return requestInfo.userPrefs.theme ?? hints.theme;
+    return requestInfo.userPrefs.theme ?? 'dark';
 }
 
 /**
