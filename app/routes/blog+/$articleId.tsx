@@ -1,3 +1,4 @@
+import { type V2_MetaDescriptor } from '@remix-run/node';
 import { type V2_MetaFunction, useLoaderData } from '@remix-run/react';
 import { redirect } from '@remix-run/router';
 import {
@@ -64,9 +65,8 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
     const url = new URL(data.url);
     const baseUrl = `${url.protocol}//${url.host}`;
     const urlWithoutQuery = `${baseUrl}${url.pathname}`;
-    const fallbackImage = `${baseUrl}/img/placeholder.jpg`;
 
-    return [
+    const metadata: V2_MetaDescriptor[] = [
         { title: `${data.article.title} | Matt Winfield` },
         {
             property: 'og:title',
@@ -76,13 +76,14 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
             property: 'og:description',
             content: data.article.description ?? 'An article by Matt Winfield',
         },
-        {
+    ];
+    if (data.article.images.length > 0) {
+        metadata.push({
             property: 'og:image',
-            content:
-                data.article.images.length > 0
-                    ? `${baseUrl}/resources/images/${data.article.images[0].id}`
-                    : fallbackImage,
-        },
+            content: `${baseUrl}/resources/images/${data.article.images[0].id}`,
+        });
+    }
+    metadata.push(
         {
             property: 'og:url',
             content: urlWithoutQuery,
@@ -111,7 +112,8 @@ export const meta: V2_MetaFunction<typeof loader> = ({ data }) => {
             property: 'article:tag',
             content: data.article.tags?.split(' ') ?? [],
         },
-    ];
+    );
+    return metadata;
 };
 
 const wordsPerMinute = 200;
