@@ -1,4 +1,3 @@
-import { useForm } from '@conform-to/react';
 import { parse } from '@conform-to/zod';
 import { cssBundleHref } from '@remix-run/css-bundle';
 import {
@@ -9,37 +8,25 @@ import {
     type V2_MetaFunction,
 } from '@remix-run/node';
 import {
-    Form,
-    Link,
     Links,
     LiveReload,
     Meta,
     Scripts,
     ScrollRestoration,
-    useFetcher,
     useFetchers,
     useLoaderData,
     useMatches,
     useOutlet,
-    useSubmit,
 } from '@remix-run/react';
 import { withSentry } from '@sentry/remix';
-import { useRef } from 'react';
 import { z } from 'zod';
 import { Confetti } from './components/confetti.tsx';
 import { GeneralErrorBoundary } from './components/error-boundary.tsx';
-import { ErrorList } from './components/forms.tsx';
 import { EpicToaster } from './components/toaster.tsx';
-import { Button } from './components/ui/button.tsx';
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuPortal,
-    DropdownMenuTrigger,
-} from './components/ui/dropdown-menu.tsx';
-import { Icon, href as iconsHref } from './components/ui/icon.tsx';
+import { href as iconsHref } from './components/ui/icon.tsx';
+import { Footer } from './features/footer/footer.tsx';
 import { NavMenu } from './features/nav-menu/components/nav-menu.tsx';
+import { ThemeSwitch } from './features/theme-switch/theme-switch.tsx';
 import fontStylestylesheetUrl from './styles/font.css';
 import tailwindStylesheetUrl from './styles/tailwind.css';
 import { authenticator, getUserId } from './utils/auth.server.ts';
@@ -51,7 +38,6 @@ import {
     cn,
     combineHeaders,
     getDomainUrl,
-    getUserImgSrc,
     invariantResponse,
 } from './utils/misc.tsx';
 import { useNonce } from './utils/nonce-provider.ts';
@@ -59,7 +45,7 @@ import { useRequestInfo } from './utils/request-info.ts';
 import { getTheme, setTheme, type Theme } from './utils/theme.server.ts';
 import { makeTimings, time } from './utils/timing.server.ts';
 import { getToast } from './utils/toast.server.ts';
-import { useOptionalUser, useUser } from './utils/user.ts';
+import { useOptionalUser } from './utils/user.ts';
 
 export const links: LinksFunction = () => {
     return [
@@ -178,7 +164,7 @@ export const headers: HeadersFunction = ({ loaderHeaders }) => {
     return headers;
 };
 
-const ThemeFormSchema = z.object({
+export const ThemeFormSchema = z.object({
     theme: z.enum(['system', 'light', 'dark']),
 });
 
@@ -293,18 +279,10 @@ function App() {
 
                 <div className="flex-1">{outlet}</div>
                 {!isOnIndexPage && !isOnCmsPage && (
-                    <div className="my-1 flex items-center justify-center gap-2">
-                        <ThemeSwitch
-                            userPreference={data.requestInfo.userPrefs.theme}
-                        />
-                        {user ? (
-                            <UserDropdown />
-                        ) : (
-                            <Link to="/login" className="text-muted-foreground">
-                                Log In
-                            </Link>
-                        )}
-                    </div>
+                    <Footer
+                        user={user}
+                        theme={data.requestInfo.userPrefs.theme}
+                    />
                 )}
             </div>
             <Confetti id={data.confettiId} />
@@ -313,70 +291,6 @@ function App() {
     );
 }
 export default withSentry(App);
-
-function UserDropdown() {
-    const user = useUser();
-    const submit = useSubmit();
-    const formRef = useRef<HTMLFormElement>(null);
-
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                <Button asChild variant="secondary">
-                    <Link
-                        to={`/users/${user.username}`}
-                        // this is for progressive enhancement
-                        onClick={(e) => e.preventDefault()}
-                        className="flex items-center gap-2"
-                    >
-                        <img
-                            className="h-8 w-8 rounded-full object-cover"
-                            alt={user.name ?? user.username}
-                            src={getUserImgSrc(user.image?.id)}
-                        />
-                        <span className="text-body-sm font-bold">
-                            {user.name ?? user.username}
-                        </span>
-                    </Link>
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuPortal>
-                <DropdownMenuContent sideOffset={8} align="start">
-                    {user.roles.some((role) => role.name === 'admin') && (
-                        <DropdownMenuItem asChild>
-                            <Link to="/admin/cms">
-                                <Icon className="text-body-md" name="plus">
-                                    Admin
-                                </Icon>
-                            </Link>
-                        </DropdownMenuItem>
-                    )}
-                    <DropdownMenuItem asChild>
-                        <Link prefetch="intent" to={`/users/${user.username}`}>
-                            <Icon className="text-body-md" name="avatar">
-                                Profile
-                            </Icon>
-                        </Link>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem
-                        asChild
-                        // this prevents the menu from closing before the form submission is completed
-                        onSelect={(event) => {
-                            event.preventDefault();
-                            submit(formRef.current);
-                        }}
-                    >
-                        <Form action="/logout" method="POST" ref={formRef}>
-                            <Icon className="text-body-md" name="exit">
-                                <button type="submit">Logout</button>
-                            </Icon>
-                        </Form>
-                    </DropdownMenuItem>
-                </DropdownMenuContent>
-            </DropdownMenuPortal>
-        </DropdownMenu>
-    );
-}
 
 /**
  * @returns the user's theme preference, or the client hint theme if the user
@@ -409,57 +323,6 @@ export function useOptimisticThemeMode() {
         });
         return submission.value?.theme;
     }
-}
-
-function ThemeSwitch({ userPreference }: { userPreference?: Theme | null }) {
-    const fetcher = useFetcher<typeof action>();
-
-    const [form] = useForm({
-        id: 'theme-switch',
-        lastSubmission: fetcher.data?.submission,
-        onValidate({ formData }) {
-            return parse(formData, { schema: ThemeFormSchema });
-        },
-    });
-
-    const optimisticMode = useOptimisticThemeMode();
-    const mode = optimisticMode ?? userPreference ?? 'system';
-    const nextMode =
-        mode === 'system' ? 'light' : mode === 'light' ? 'dark' : 'system';
-    const modeLabel = {
-        light: (
-            <Icon name="sun">
-                <span className="sr-only">Light</span>
-            </Icon>
-        ),
-        dark: (
-            <Icon name="moon">
-                <span className="sr-only">Dark</span>
-            </Icon>
-        ),
-        system: (
-            <Icon name="laptop">
-                <span className="sr-only">System</span>
-            </Icon>
-        ),
-    };
-
-    return (
-        <fetcher.Form method="POST" {...form.props}>
-            <input type="hidden" name="theme" value={nextMode} />
-            <div className="flex gap-2">
-                <button
-                    name="intent"
-                    value="update-theme"
-                    type="submit"
-                    className="flex h-8 w-8 cursor-pointer items-center justify-center"
-                >
-                    {modeLabel[mode]}
-                </button>
-            </div>
-            <ErrorList errors={form.errors} id={form.errorId} />
-        </fetcher.Form>
-    );
 }
 
 export function ErrorBoundary() {
