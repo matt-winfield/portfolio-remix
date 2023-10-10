@@ -63,7 +63,9 @@ export default function Skills() {
                                     />
                                 )}
                             </span>
-                            <span>{technology.name}</span>
+                            <span className="text-center">
+                                {technology.name}
+                            </span>
                         </motion.div>
                     ))}
                 </motion.div>
