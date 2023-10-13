@@ -14,8 +14,8 @@ const decodeHtml = (html: string) => {
         .replaceAll('&quot;', '"');
 };
 
-export const FormattedArticle = ({ html, ...props }: FormattedArticleProps) => {
-    const formattedHtml = useMemo(() => {
+const useHighlightCodeBlocks = (html: string) => {
+    return useMemo(() => {
         const codeBlockRegex =
             /<pre><code class="language-([a-z]+)">([\s\S]+?)<\/code><\/pre>/g;
         const inlineCodeRegex = /<code>([\s\S]+?)<\/code>/g;
@@ -45,7 +45,32 @@ export const FormattedArticle = ({ html, ...props }: FormattedArticleProps) => {
 
         return formattedHtml;
     }, [html]);
-    return (
-        <div dangerouslySetInnerHTML={{ __html: formattedHtml }} {...props} />
-    );
+};
+
+const useYoutubeEmbeds = (html: string) => {
+    return useMemo(() => {
+        // Youtube video URL regex
+        // e.g. <a href="https://www.youtube.com/watch?v=QH2-TGUlwu4">test</a>
+        // e.g. <a href="https://youtu.be/QH2-TGUlwu4">Something</a>
+        const youtubeRegex =
+            /<a .*?href="(?:https:\/\/www\.youtube\.com\/watch\?v=|https:\/\/youtu\.be\/)([a-zA-Z0-9_-]+).*?">.*?<\/a>/g;
+
+        const matches = [...html.matchAll(youtubeRegex)];
+        let formattedHtml = html;
+        for (const match of matches) {
+            const [fullMatch, videoId] = match;
+            formattedHtml = formattedHtml.replace(
+                fullMatch,
+                `<iframe class="youtube-video" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`,
+            );
+        }
+        return formattedHtml;
+    }, [html]);
+};
+
+export const FormattedArticle = ({ html, ...props }: FormattedArticleProps) => {
+    const highlightedHtml = useHighlightCodeBlocks(html);
+    const youtubeHtml = useYoutubeEmbeds(highlightedHtml);
+
+    return <div dangerouslySetInnerHTML={{ __html: youtubeHtml }} {...props} />;
 };

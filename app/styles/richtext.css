@@ -8,6 +8,13 @@
         @apply text-accent-foreground;
     }
 
+    .youtube-video {
+        @apply w-4/5;
+        @apply aspect-video;
+        @apply mx-auto;
+        @apply my-4;
+    }
+
     /* Remove Tailwind CSS reset for these elements */
     h1,
     h2,
