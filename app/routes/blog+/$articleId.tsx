@@ -168,7 +168,7 @@ export default function Article() {
                         <div className="my-3">
                             <img
                                 className={cn(
-                                    'h-[50vh] w-full object-contain transition-opacity',
+                                    'h-48 w-full object-cover transition-opacity sm:h-[30vh]',
                                     !imageLoaded && 'opacity-0',
                                 )}
                                 ref={imageRef}
