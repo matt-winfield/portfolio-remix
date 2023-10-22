@@ -7,13 +7,14 @@ import {
     type LinksFunction,
 } from '@remix-run/server-runtime';
 import { format } from 'date-fns';
+import { useEffect, useRef, useState } from 'react';
 import { FormattedArticle } from '#app/features/blog/components/formatted-article.tsx';
 import { TagList } from '#app/features/blog/components/tag-list.tsx';
 import richtextStylesUrl from '#app/styles/richtext.css';
 import syntaxHighlightingStylesUrl from '#app/styles/syntax-highlighting.css';
 import { getUser } from '#app/utils/auth.server.ts';
 import { prisma } from '#app/utils/db.server.ts';
-import { invariantResponse } from '#app/utils/misc.tsx';
+import { cn, invariantResponse } from '#app/utils/misc.tsx';
 
 export const links: LinksFunction = () => [
     { rel: 'stylesheet', href: richtextStylesUrl },
@@ -120,6 +121,7 @@ const wordsPerMinute = 200;
 
 export default function Article() {
     const data = useLoaderData<typeof loader>();
+    const [imageLoaded, setImageLoaded] = useState(false);
 
     const publicationDate = data.article.publishedAt
         ? format(new Date(data.article.publishedAt), 'd MMM yyyy')
@@ -128,6 +130,20 @@ export default function Article() {
 
     const wordCount = data.article.content.split(/\s+/).length;
     const minutesToRead = Math.ceil(wordCount / wordsPerMinute);
+
+    const imageRef = useRef<HTMLImageElement>(null);
+
+    useEffect(() => {
+        // The image may already be loaded if it's cached, in which case onLoad never fires,
+        // so we need to check if it's complete when the page first loads
+        if (imageRef.current?.complete) {
+            setImageLoaded(true);
+        }
+    }, []);
+
+    const onImageLoad = () => {
+        setImageLoaded(true);
+    };
 
     return (
         <div className="container">
@@ -151,7 +167,12 @@ export default function Article() {
                     {data.article.images.length > 0 && (
                         <div className="my-3">
                             <img
-                                className="max-h-[50vh] w-full object-contain"
+                                className={cn(
+                                    'h-[50vh] w-full object-contain transition-opacity',
+                                    !imageLoaded && 'opacity-0',
+                                )}
+                                ref={imageRef}
+                                onLoad={onImageLoad}
                                 src={`/resources/images/${data.article.images[0].id}`}
                                 alt={
                                     data.article.images[0].altText ??
