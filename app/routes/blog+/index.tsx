@@ -33,7 +33,12 @@ export const loader = async ({ request }: DataFunctionArgs) => {
         select: {
             id: true,
             title: true,
-            images: true,
+            images: {
+                select: {
+                    id: true,
+                    altText: true,
+                },
+            },
             slug: true,
             publishedAt: true,
             description: true,

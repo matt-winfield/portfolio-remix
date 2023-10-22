@@ -34,7 +34,12 @@ export const loader = async ({ request, params }: DataFunctionArgs) => {
             id: true,
             title: true,
             content: true,
-            images: true,
+            images: {
+                select: {
+                    id: true,
+                    altText: true,
+                },
+            },
             slug: true,
             draft: true,
             publishedAt: true,
