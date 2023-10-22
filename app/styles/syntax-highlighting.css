@@ -155,6 +155,10 @@
         color: #f7768e;
     }
 
+    .hljs-deletion {
+        background-color: #420b0d;
+    }
+
     /*Orange */
     /*INFO: Number and Boolean constants, Language support constants */
     .hljs-variable,
@@ -205,6 +209,10 @@
     .hljs-bullet,
     .hljs-addition {
         color: #9ece6a;
+    }
+
+    .hljs-addition {
+        background-color: #003f00;
     }
 
     /* Blue */
