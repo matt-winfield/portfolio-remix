@@ -98,6 +98,7 @@
         "luxon": "^3.4.3",
         "morgan": "^1.10.0",
         "prisma": "^5.1.1",
+        "prom-client": "^15.0.0",
         "qrcode": "^1.5.3",
         "ra-data-json-server": "^4.13.3",
         "ra-data-simple-prisma": "^3.1.0",

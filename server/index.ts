@@ -1,3 +1,6 @@
+import crypto from 'crypto';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import {
     createRequestHandler as _createRequestHandler,
     type RequestHandler,
@@ -13,18 +16,21 @@ import chalk from 'chalk';
 import chokidar from 'chokidar';
 import closeWithGrace from 'close-with-grace';
 import compression from 'compression';
-import crypto from 'crypto';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import getPort, { portNumbers } from 'get-port';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import path from 'path';
-import { fileURLToPath } from 'url';
 
 // @ts-ignore - this file may not exist if you haven't built yet, but it will
 // definitely exist by the time the dev or prod server actually runs.
 import * as remixBuild from '#build/index.js';
+import { type prometheus as prometheusType } from '#server/prometheus.server.ts';
+// @ts-ignore - this file may not exist if you haven't built yet, but it will
+// definitely exist by the time the dev or prod server actually runs.
+import { prometheus as _prometheus } from '#server-build/prometheus.server.js';
+
+const prometheus = _prometheus as typeof prometheusType;
 
 installGlobals();
 
@@ -88,6 +94,22 @@ app.use(
 // Everything else (like favicon.ico) is cached for an hour. You may want to be
 // more aggressive with this caching.
 app.use(express.static('public', { maxAge: '1h' }));
+
+app.use((req, res, next) => {
+    const start = Date.now();
+    res.on('finish', () => {
+        const duration = Date.now() - start;
+        prometheus.requestCounter.inc({
+            method: req.method,
+            path: req.path,
+            status: res.statusCode.toString(),
+        });
+        prometheus.requestDuration.observe({ path: req.path }, duration);
+        prometheus.requestDurationSummary.observe({ path: req.path }, duration);
+    });
+
+    next();
+});
 
 morgan.token('url', (req, res) => decodeURIComponent(req.url ?? ''));
 app.use(morgan('tiny'));
@@ -196,6 +218,31 @@ app.all(
         : getRequestHandler(build),
 );
 
+const metricsApp = express();
+
+metricsApp.use(morgan('tiny'));
+
+metricsApp.get('/metrics', async (_, res) => {
+    const metrics = await prometheus.client.register.metrics();
+    res.set('Content-Type', 'text/plain');
+    res.send(metrics);
+});
+
+const desiredMetricsPort = 9091;
+const metricsPort = await getPort({
+    port: portNumbers(desiredMetricsPort, desiredMetricsPort + 100),
+});
+const metricsServer = metricsApp.listen(metricsPort, () => {
+    if (metricsPort !== desiredMetricsPort) {
+        console.warn(
+            chalk.yellow(
+                `⚠️  Metrics port ${desiredMetricsPort} is not available, using ${metricsPort} instead.`,
+            ),
+        );
+    }
+    console.log(`📈 Metrics server listening on port ${metricsPort}`);
+});
+
 const desiredPort = Number(process.env.PORT || 3000);
 const portToUse = await getPort({
     port: portNumbers(desiredPort, desiredPort + 100),
@@ -244,6 +291,9 @@ ${chalk.bold('Press Ctrl+C to stop')}
 closeWithGrace(async () => {
     await new Promise((resolve, reject) => {
         server.close((e) => (e ? reject(e) : resolve('ok')));
+    });
+    await new Promise((resolve, reject) => {
+        metricsServer.close((e) => (e ? reject(e) : resolve('ok')));
     });
 });
 
