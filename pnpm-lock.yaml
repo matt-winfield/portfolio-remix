@@ -173,6 +173,9 @@ dependencies:
     prisma:
         specifier: ^5.1.1
         version: 5.1.1
+    prom-client:
+        specifier: ^15.0.0
+        version: 15.0.0
     qrcode:
         specifier: ^1.5.3
         version: 1.5.3
@@ -4076,6 +4079,14 @@ packages:
             }
         dev: true
 
+    /@opentelemetry/api@1.6.0:
+        resolution:
+            {
+                integrity: sha512-OWlrQAnWn9577PhVgqjUvMr1pg57Bc4jv0iL4w0PRuOSRvq67rvHW9Ie/dZVMvCzhSCB+UxhcY/PmCmFj33Q+g==,
+            }
+        engines: { node: '>=8.0.0' }
+        dev: false
+
     /@paralleldrive/cuid2@2.2.2:
         resolution:
             {
@@ -7786,6 +7797,13 @@ packages:
             }
         dependencies:
             file-uri-to-path: 1.0.0
+
+    /bintrees@1.0.2:
+        resolution:
+            {
+                integrity: sha512-VOMgTMwjAaUG580SXn3LacVgjurrbMme7ZZNYGSSV7mmtY6QQRh0Eg3pwIcntQ77DErK1L0NxkbetjcoXzVwKw==,
+            }
+        dev: false
 
     /bl@4.1.0:
         resolution:
@@ -15434,6 +15452,17 @@ packages:
         engines: { node: '>=0.4.0' }
         dev: false
 
+    /prom-client@15.0.0:
+        resolution:
+            {
+                integrity: sha512-UocpgIrKyA2TKLVZDSfm8rGkL13C19YrQBAiG3xo3aDFWcHedxRxI3z+cIcucoxpSO0h5lff5iv/SXoxyeopeA==,
+            }
+        engines: { node: ^16 || ^18 || >=20 }
+        dependencies:
+            '@opentelemetry/api': 1.6.0
+            tdigest: 0.1.2
+        dev: false
+
     /promise-inflight@1.0.1:
         resolution:
             {
@@ -18000,6 +18029,15 @@ packages:
             mkdirp: 1.0.4
             yallist: 4.0.0
         dev: true
+
+    /tdigest@0.1.2:
+        resolution:
+            {
+                integrity: sha512-+G0LLgjjo9BZX2MfdvPfH+MKLCrxlXSYec5DaPYP1fe6Iyhf0/fSmJ0bFiZ1F8BT6cGXl2LpltQptzjXKWEkKA==,
+            }
+        dependencies:
+            bintrees: 1.0.2
+        dev: false
 
     /test-exclude@6.0.0:
         resolution:

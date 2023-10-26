@@ -1,5 +1,6 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient, type Prisma } from '@prisma/client';
 import chalk from 'chalk';
+import { prometheus } from '#server/prometheus.server.ts';
 import { singleton } from './singleton.server.ts';
 
 const prisma = singleton('prisma', () => {
@@ -17,6 +18,8 @@ const prisma = singleton('prisma', () => {
         ],
     });
     client.$on('query', async (e) => {
+        recordMetrics(e);
+
         if (e.duration < logThreshold) return;
         const color =
             e.duration < logThreshold * 1.1
@@ -34,5 +37,11 @@ const prisma = singleton('prisma', () => {
     client.$connect();
     return client;
 });
+
+const recordMetrics = (e: Prisma.QueryEvent) => {
+    prometheus.sqlQueryCounter.inc({ query: e.query });
+    prometheus.sqlQueryDuration.observe({ query: e.query }, e.duration);
+    prometheus.sqlQueryDurationSummary.observe({ query: e.query }, e.duration);
+};
 
 export { prisma };
