@@ -49,11 +49,19 @@ export default async function handleRequest(...args: DocRequestArgs) {
     const apolloClient = new ApolloClient({
         ssrMode: true,
         cache: new InMemoryCache(),
-        // link: new SchemaLink({ schema: graphqlSchema }),
-        // TODO: figure out why this doesn't work
+        // link: new SchemaLink({
+        //     schema: graphqlSchema,
+        //     context: {
+        //         user: await getUser(request),
+        //     },
+        // }),
+        // TODO: figure out why SchemaLink doesn't work
         // SchemaLink seems to not fetch any data, so we have to do it via network
         link: new HttpLink({
             uri: 'http://localhost:3000/api/graphql',
+            headers: {
+                cookie: request.headers.get('cookie') ?? '',
+            },
         }),
     });
 
@@ -71,7 +79,11 @@ export default async function handleRequest(...args: DocRequestArgs) {
         // and will not include suspended components and deferred loaders
         const timings = makeTimings('render', 'renderToPipeableStream');
 
-        await getDataFromTree(App);
+        try {
+            await getDataFromTree(App);
+        } catch (e) {
+            console.error('Error while getting Apollo data', e);
+        }
         const apolloState = apolloClient.extract();
 
         const { pipe, abort } = renderToPipeableStream(

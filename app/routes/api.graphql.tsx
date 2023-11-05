@@ -1,12 +1,15 @@
 import {
     type LoaderFunction,
     type ActionFunction,
+    json,
 } from '@remix-run/server-runtime';
 import { graphql } from 'graphql';
 import { graphqlSchema } from '#app/graphql/graphql.server.ts';
+import { getUser } from '#app/utils/auth.server.ts';
 import { invariantResponse } from '#app/utils/misc.tsx';
 
 export const loader: LoaderFunction = async ({ request }) => {
+    const user = await getUser(request);
     const params = new URL(request.url).searchParams;
 
     const query = params.get('query');
@@ -21,8 +24,9 @@ export const loader: LoaderFunction = async ({ request }) => {
         schema: graphqlSchema,
         source: query,
         variableValues: variables,
+        contextValue: { user },
     });
-    return result;
+    return json(result);
 };
 
 type GraphqlRequest = {
@@ -32,6 +36,7 @@ type GraphqlRequest = {
 };
 
 export const action: ActionFunction = async ({ request }) => {
+    const user = await getUser(request);
     const {
         query,
         variables: variablesOriginal,
@@ -46,6 +51,7 @@ export const action: ActionFunction = async ({ request }) => {
         source: query,
         variableValues: variables,
         operationName,
+        contextValue: { user },
     });
-    return result;
+    return json(result);
 };

@@ -1,3 +1,54 @@
 type Query {
-    hello: String
+    viewer: Viewer!
+    image(id: ID!): Image
+}
+
+type PageInfo {
+    startCursor: String
+    endCursor: String
+    hasNextPage: Boolean
+    hasPreviousPage: Boolean
+}
+
+type Viewer {
+    articlesConnection(after: String, limit: Int!): ArticlesConnection
+    article(id: ID!): Article
+    user: User
+}
+
+type Article {
+    id: ID!
+    title: String!
+    content: String!
+    description: String
+    tags: String
+    images: [Image]
+    publishedAt: String
+    updatedAt: String!
+    slug: String
+    draft: Boolean!
+}
+
+type ArticleEdge {
+    cursor: String!
+    node: Article!
+}
+
+type ArticlesConnection {
+    edges: [ArticleEdge!]!
+    pageInfo: PageInfo!
+}
+
+type Image {
+    id: ID!
+    altText: String
+    contentType: String
+}
+
+type User {
+    id: ID!
+    email: String!
+    username: String!
+    name: String
+    image: Image
 }
