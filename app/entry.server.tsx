@@ -1,9 +1,16 @@
+import { PassThrough } from 'stream';
+import {
+    ApolloClient,
+    ApolloProvider,
+    HttpLink,
+    InMemoryCache,
+} from '@apollo/client';
+import { getDataFromTree } from '@apollo/client/react/ssr';
 import { Response, type HandleDocumentRequestFunction } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import isbot from 'isbot';
 import { getInstanceInfo } from 'litefs-js';
 import { renderToPipeableStream } from 'react-dom/server';
-import { PassThrough } from 'stream';
 import { getEnv, init } from './utils/env.server.ts';
 import { NonceProvider } from './utils/nonce-provider.ts';
 import { makeTimings } from './utils/timing.server.ts';
@@ -38,16 +45,46 @@ export default async function handleRequest(...args: DocRequestArgs) {
         : 'onShellReady';
 
     const nonce = String(loadContext.cspNonce) ?? undefined;
+
+    const apolloClient = new ApolloClient({
+        ssrMode: true,
+        cache: new InMemoryCache(),
+        // link: new SchemaLink({ schema: graphqlSchema }),
+        // TODO: figure out why this doesn't work
+        // SchemaLink seems to not fetch any data, so we have to do it via network
+        link: new HttpLink({
+            uri: 'http://localhost:3000/api/graphql',
+        }),
+    });
+
+    const App = (
+        <NonceProvider value={nonce}>
+            <ApolloProvider client={apolloClient}>
+                <RemixServer context={remixContext} url={request.url} />
+            </ApolloProvider>
+        </NonceProvider>
+    );
+
     return new Promise(async (resolve, reject) => {
         let didError = false;
         // NOTE: this timing will only include things that are rendered in the shell
         // and will not include suspended components and deferred loaders
         const timings = makeTimings('render', 'renderToPipeableStream');
 
+        await getDataFromTree(App);
+        const apolloState = apolloClient.extract();
+
         const { pipe, abort } = renderToPipeableStream(
-            <NonceProvider value={nonce}>
-                <RemixServer context={remixContext} url={request.url} />
-            </NonceProvider>,
+            <>
+                {App}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `window.__APOLLO_STATE__=${JSON.stringify(
+                            apolloState,
+                        ).replace(/</g, '\\u003c')}`, // The replace call escapes the < character to prevent cross-site scripting attacks that are possible via the presence of </script> in a string literal
+                    }}
+                />
+            </>,
             {
                 [callbackName]: () => {
                     const body = new PassThrough();

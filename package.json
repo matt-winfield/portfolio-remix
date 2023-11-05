@@ -42,6 +42,8 @@
         "/server-build"
     ],
     "dependencies": {
+        "@apollo/client": "^3.8.7",
+        "@apollo/react-ssr": "^4.0.0",
         "@conform-to/react": "^0.8.0",
         "@conform-to/zod": "^0.8.0",
         "@dnd-kit/core": "^6.0.8",
@@ -88,6 +90,9 @@
         "express-session": "^1.17.3",
         "framer-motion": "^10.15.1",
         "get-port": "^7.0.0",
+        "graphql": "^16.8.1",
+        "graphql-http": "^1.22.0",
+        "graphql-import-node": "^0.0.5",
         "helmet": "^7.0.0",
         "highlight.js": "^11.8.0",
         "intl-parse-accept-language": "^1.0.0",
