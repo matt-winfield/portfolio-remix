@@ -19,10 +19,8 @@ import compression from 'compression';
 import express from 'express';
 import rateLimit from 'express-rate-limit';
 import getPort, { portNumbers } from 'get-port';
-import { createHandler } from 'graphql-http/lib/use/express';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import { graphqlSchema } from '#app/graphql/graphql.server.ts';
 
 // @ts-ignore - this file may not exist if you haven't built yet, but it will
 // definitely exist by the time the dev or prod server actually runs.
@@ -205,13 +203,6 @@ app.use((req, res, next) => {
 
     return generalRateLimit(req, res, next);
 });
-
-app.all(
-    '/api/graphql',
-    createHandler({
-        schema: graphqlSchema,
-    }),
-);
 
 function getRequestHandler(build: ServerBuild): RequestHandler {
     function getLoadContext(_: any, res: any) {
