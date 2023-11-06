@@ -1,57 +1,19 @@
-import {
-    json,
-    type DataFunctionArgs,
-    type V2_MetaFunction,
-} from '@remix-run/node';
-import { Link, useFetcher, useLoaderData } from '@remix-run/react';
-import { format } from 'date-fns';
+import { useQuery } from '@apollo/client';
+import { type V2_MetaFunction } from '@remix-run/node';
 import { DateTime } from 'luxon';
 import { useEffect, useRef, useState } from 'react';
 import { useIntersection } from 'react-use';
 import { Spinner } from '#app/components/spinner.tsx';
 import { blogEnabled } from '#app/features/blog/blog-config.tsx';
-import { TagList } from '#app/features/blog/components/tag-list.tsx';
+import { ArticleSummary } from '#app/features/blog/components/article-summary.tsx';
 import { startOfCareer } from '#app/features/experience/constants.ts';
-import { getUser } from '#app/utils/auth.server.ts';
-import { prisma } from '#app/utils/db.server.ts';
+import { gql } from '#app/graphql/__generated__/gql.ts';
 
-export const loader = async ({ request }: DataFunctionArgs) => {
+export const loader = async () => {
     if (!blogEnabled) {
         throw new Response('Not Found', { status: 404 });
     }
-
-    const user = await getUser(request);
-    const showDrafts = user?.roles?.some((role) => role.name == 'admin');
-
-    const page = Number(new URL(request.url).searchParams.get('page')) || 1;
-    const articlesPerPage = 20;
-
-    const articles = await prisma.article.findMany({
-        where: {
-            draft: showDrafts ? undefined : false,
-        },
-        select: {
-            id: true,
-            title: true,
-            images: {
-                select: {
-                    id: true,
-                    altText: true,
-                },
-            },
-            slug: true,
-            publishedAt: true,
-            description: true,
-            tags: true,
-        },
-        orderBy: {
-            publishedAt: 'desc',
-        },
-        skip: (page - 1) * articlesPerPage,
-        take: articlesPerPage,
-    });
-
-    return json({ articles });
+    return null;
 };
 
 export const meta: V2_MetaFunction<typeof loader> = () => {
@@ -63,42 +25,59 @@ export const meta: V2_MetaFunction<typeof loader> = () => {
     ];
 };
 
-export default function Blog() {
-    const initialData = useLoaderData<typeof loader>();
-    const [articles, setArticles] = useState(initialData.articles);
-    const [page, setPage] = useState(2); // Start at page 2 because we've already loaded page 1
-    const [reachedEnd, setReachedEnd] = useState(false);
-    const fetcher = useFetcher<typeof loader>();
+const ARTICLES_QUERY = gql(`#graphql
+    query Articles($after: String, $limit: Int!) {
+        viewer {
+            articlesConnection(after: $after, limit: $limit) {
+                edges {
+                    node {
+                        id
+                        ...ArticleSummaryFragment
+                    }
+                }
+                pageInfo {
+                    endCursor
+                    hasNextPage
+                }
+            }
+        }
+    }
+`);
 
+export default function Blog() {
     const intersectionRef = useRef(null);
     const intersection = useIntersection(intersectionRef, {
         root: null,
         rootMargin: '100px', // Start fetching slightly before reaching end of screen
     });
 
+    const { data, fetchMore } = useQuery(ARTICLES_QUERY, {
+        variables: {
+            limit: 20,
+        },
+    });
+    const [loadingMore, setLoadingMore] = useState(false);
+
+    const pageInfo = data?.viewer.articlesConnection?.pageInfo;
+    const edges = data?.viewer.articlesConnection?.edges ?? [];
+
     useEffect(() => {
         if (
             intersection &&
             intersection.isIntersecting &&
-            fetcher.state === 'idle' &&
-            !reachedEnd
+            pageInfo?.hasNextPage &&
+            !loadingMore
         ) {
-            fetcher.load(`/blog?page=${page}`);
-            setPage((page) => page + 1);
+            setLoadingMore(true);
+            fetchMore({
+                variables: {
+                    after: pageInfo?.endCursor,
+                },
+            }).then(() => {
+                setLoadingMore(false);
+            });
         }
-    }, [intersection, fetcher, page, reachedEnd]);
-
-    useEffect(() => {
-        const newData = fetcher.data;
-        if (!newData) return;
-
-        if (newData.articles.length === 0) {
-            setReachedEnd(true);
-            return;
-        }
-
-        setArticles((articles) => [...articles, ...newData.articles]);
-    }, [fetcher.data]);
+    }, [intersection, fetchMore, pageInfo, loadingMore]);
 
     const now = new Date();
     const experienceDuration = DateTime.fromJSDate(now).diff(
@@ -125,39 +104,12 @@ export default function Blog() {
                 </p>
             </div>
             <div className="my-3 flex w-full max-w-3xl flex-col gap-2">
-                {articles.map((article) => (
-                    <Link
-                        to={`/blog/${article.slug ?? article.id}`}
-                        key={article.id}
-                        className="group rounded bg-card px-5 py-3"
-                    >
-                        <div className="flex flex-col sm:flex-row">
-                            <div className="flex-1 text-xl transition-colors group-hover:text-accent-foreground">
-                                {article.title}
-                            </div>
-                            {article.publishedAt && (
-                                <div className="text-sm text-muted-foreground">
-                                    {format(
-                                        new Date(article.publishedAt),
-                                        'd MMM yyyy',
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                        {article.description && (
-                            <div className="text-muted-foreground">
-                                {article.description}
-                            </div>
-                        )}
-                        {article.tags && <TagList tags={article.tags} />}
-                    </Link>
+                {edges.map((edge) => (
+                    <ArticleSummary key={edge.node.id} article={edge.node} />
                 ))}
                 <div ref={intersectionRef} />
                 <div className="flex justify-center">
-                    <Spinner
-                        showSpinner={fetcher.state !== 'idle'}
-                        className="static"
-                    />
+                    <Spinner showSpinner={loadingMore} className="static" />
                 </div>
             </div>
         </div>
