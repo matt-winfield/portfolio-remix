@@ -10,6 +10,8 @@ export default {
     serverDependenciesToBundle: [
         'react-use',
         '@apollo/client',
+        '@apollo/client/react/ssr',
+        '@apollo/client/utilities',
         'ts-invariant',
         '@wry/equality',
         '@wry/context',
