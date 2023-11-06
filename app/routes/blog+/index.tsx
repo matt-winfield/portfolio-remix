@@ -1,4 +1,4 @@
-import { useApolloClient, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import {
     json,
     type DataFunctionArgs,
@@ -82,52 +82,6 @@ const ARTICLES_QUERY = gql(`#graphql
     }
 `);
 
-const usePaginationQuery = () => {
-    const apolloClient = useApolloClient();
-    // TODO: This re-triggers the query when fetchMore updates the cache,
-    // so we get a duplicate request. This entire function shouldn't be needed, but adding
-    // the `relayStylePagination()` option to the `InMemoryCache` `TypePolicies` (specifically the `merge` function)
-    // causes the initial read to not use the cache, resulting in it re-querying the request made server-side. (And disappearing on client-side until that request completes)
-    const { data } = useQuery(ARTICLES_QUERY, {
-        variables: {
-            limit: 20,
-        },
-    });
-    const [loading, setLoading] = useState(false);
-
-    const [edges, setEdges] = useState(
-        data?.viewer.articlesConnection?.edges ?? [],
-    );
-    const [pageInfo, setPageInfo] = useState(
-        data?.viewer.articlesConnection?.pageInfo,
-    );
-
-    const fetchMore = async () => {
-        if (!pageInfo?.hasNextPage || !pageInfo?.endCursor) {
-            return;
-        }
-
-        setLoading(true);
-        const nextResults = await apolloClient.query({
-            query: ARTICLES_QUERY,
-            variables: { after: pageInfo?.endCursor, limit: 20 },
-        });
-        setEdges([
-            ...edges,
-            ...(nextResults.data.viewer?.articlesConnection?.edges ?? []),
-        ]);
-        setPageInfo(nextResults.data.viewer?.articlesConnection?.pageInfo);
-        setLoading(false);
-    };
-
-    return {
-        loading,
-        edges,
-        pageInfo,
-        fetchMore,
-    };
-};
-
 export default function Blog() {
     const intersectionRef = useRef(null);
     const intersection = useIntersection(intersectionRef, {
@@ -135,18 +89,33 @@ export default function Blog() {
         rootMargin: '100px', // Start fetching slightly before reaching end of screen
     });
 
-    const { loading, edges, fetchMore, pageInfo } = usePaginationQuery();
+    const { data, fetchMore } = useQuery(ARTICLES_QUERY, {
+        variables: {
+            limit: 20,
+        },
+    });
+    const [loadingMore, setLoadingMore] = useState(false);
+
+    const pageInfo = data?.viewer.articlesConnection?.pageInfo;
+    const edges = data?.viewer.articlesConnection?.edges ?? [];
 
     useEffect(() => {
         if (
             intersection &&
             intersection.isIntersecting &&
             pageInfo?.hasNextPage &&
-            !loading
+            !loadingMore
         ) {
-            fetchMore();
+            setLoadingMore(true);
+            fetchMore({
+                variables: {
+                    after: pageInfo?.endCursor,
+                },
+            }).then(() => {
+                setLoadingMore(false);
+            });
         }
-    }, [intersection, fetchMore, pageInfo, loading]);
+    }, [intersection, fetchMore, pageInfo, loadingMore]);
 
     const now = new Date();
     const experienceDuration = DateTime.fromJSDate(now).diff(
@@ -178,7 +147,7 @@ export default function Blog() {
                 ))}
                 <div ref={intersectionRef} />
                 <div className="flex justify-center">
-                    <Spinner showSpinner={loading} className="static" />
+                    <Spinner showSpinner={loadingMore} className="static" />
                 </div>
             </div>
         </div>

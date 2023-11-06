@@ -11,6 +11,7 @@ import { RemixServer } from '@remix-run/react';
 import isbot from 'isbot';
 import { getInstanceInfo } from 'litefs-js';
 import { renderToPipeableStream } from 'react-dom/server';
+import { typePolicies } from './graphql/type-policies.ts';
 import { getEnv, init } from './utils/env.server.ts';
 import { NonceProvider } from './utils/nonce-provider.ts';
 import { makeTimings } from './utils/timing.server.ts';
@@ -48,7 +49,9 @@ export default async function handleRequest(...args: DocRequestArgs) {
 
     const apolloClient = new ApolloClient({
         ssrMode: true,
-        cache: new InMemoryCache(),
+        cache: new InMemoryCache({
+            typePolicies,
+        }),
         // link: new SchemaLink({
         //     schema: graphqlSchema,
         //     context: {
