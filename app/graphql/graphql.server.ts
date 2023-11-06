@@ -41,7 +41,7 @@ const ArticleType = new GraphQLObjectType({
         publishedAt: { type: GraphQLString },
         updatedAt: { type: GraphQLString },
         slug: { type: GraphQLString },
-        draft: { type: GraphQLString },
+        draft: { type: GraphQLBoolean },
     },
 });
 
@@ -78,6 +78,10 @@ const ViewerType = new GraphQLObjectType({
         user: {
             type: UserType,
             resolve: async (source, args, context) => {
+                if (!context.user) {
+                    return null;
+                }
+
                 const result = await prisma.user.findUnique({
                     where: {
                         id: context.user?.id,
@@ -97,10 +101,31 @@ const ViewerType = new GraphQLObjectType({
                 const after = args.after as string | undefined;
                 const limit = args.limit as number;
 
+                const user = context.user
+                    ? await prisma.user.findUnique({
+                          where: {
+                              id: context.user?.id,
+                          },
+                          select: {
+                              roles: {
+                                  select: {
+                                      name: true,
+                                  },
+                              },
+                          },
+                      })
+                    : undefined;
+
+                const showDrafts =
+                    user?.roles?.some((role) => role.name == 'admin') ?? false;
+
                 const articlesPlusOne = await prisma.article.findMany({
                     take: limit + 1, // take one more than we need to see if there is a next page
                     cursor: after ? { id: after } : undefined,
                     skip: after ? 1 : undefined,
+                    where: {
+                        draft: showDrafts ? undefined : false,
+                    },
                 });
 
                 const articles = articlesPlusOne.slice(0, limit);

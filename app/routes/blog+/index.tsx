@@ -1,9 +1,5 @@
 import { useQuery } from '@apollo/client';
-import {
-    json,
-    type DataFunctionArgs,
-    type V2_MetaFunction,
-} from '@remix-run/node';
+import { type V2_MetaFunction } from '@remix-run/node';
 import { DateTime } from 'luxon';
 import { useEffect, useRef, useState } from 'react';
 import { useIntersection } from 'react-use';
@@ -12,46 +8,12 @@ import { blogEnabled } from '#app/features/blog/blog-config.tsx';
 import { ArticleSummary } from '#app/features/blog/components/article-summary.tsx';
 import { startOfCareer } from '#app/features/experience/constants.ts';
 import { gql } from '#app/graphql/__generated__/gql.ts';
-import { getUser } from '#app/utils/auth.server.ts';
-import { prisma } from '#app/utils/db.server.ts';
 
-export const loader = async ({ request }: DataFunctionArgs) => {
+export const loader = async () => {
     if (!blogEnabled) {
         throw new Response('Not Found', { status: 404 });
     }
-
-    const user = await getUser(request);
-    const showDrafts = user?.roles?.some((role) => role.name == 'admin');
-
-    const page = Number(new URL(request.url).searchParams.get('page')) || 1;
-    const articlesPerPage = 20;
-
-    const articles = await prisma.article.findMany({
-        where: {
-            draft: showDrafts ? undefined : false,
-        },
-        select: {
-            id: true,
-            title: true,
-            images: {
-                select: {
-                    id: true,
-                    altText: true,
-                },
-            },
-            slug: true,
-            publishedAt: true,
-            description: true,
-            tags: true,
-        },
-        orderBy: {
-            publishedAt: 'desc',
-        },
-        skip: (page - 1) * articlesPerPage,
-        take: articlesPerPage,
-    });
-
-    return json({ articles });
+    return null;
 };
 
 export const meta: V2_MetaFunction<typeof loader> = () => {
