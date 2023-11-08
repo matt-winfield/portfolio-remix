@@ -2,16 +2,20 @@ import { PassThrough } from 'stream';
 import {
     ApolloClient,
     ApolloProvider,
-    HttpLink,
     InMemoryCache,
+    from,
 } from '@apollo/client';
+import { onError } from '@apollo/client/link/error';
+import { SchemaLink } from '@apollo/client/link/schema';
 import { getDataFromTree } from '@apollo/client/react/ssr';
 import { Response, type HandleDocumentRequestFunction } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import isbot from 'isbot';
 import { getInstanceInfo } from 'litefs-js';
 import { renderToPipeableStream } from 'react-dom/server';
+import { graphqlSchema } from '#app/graphql/graphql.server.ts';
 import { typePolicies } from './graphql/type-policies.ts';
+import { getUser } from './utils/auth.server.ts';
 import { getEnv, init } from './utils/env.server.ts';
 import { NonceProvider } from './utils/nonce-provider.ts';
 import { makeTimings } from './utils/timing.server.ts';
@@ -47,25 +51,36 @@ export default async function handleRequest(...args: DocRequestArgs) {
 
     const nonce = String(loadContext.cspNonce) ?? undefined;
 
+    const graphqlLink = new SchemaLink({
+        schema: graphqlSchema,
+        context: {
+            user: await getUser(request),
+        },
+    });
+
+    const errorLink = onError(({ graphQLErrors, networkError }) => {
+        if (graphQLErrors) {
+            console.error('GraphQL Errors', graphQLErrors);
+        }
+        if (networkError) {
+            console.error('GraphQL Network Error', networkError);
+        }
+    });
+
     const apolloClient = new ApolloClient({
         ssrMode: true,
         cache: new InMemoryCache({
             typePolicies,
         }),
-        // link: new SchemaLink({
-        //     schema: graphqlSchema,
-        //     context: {
-        //         user: await getUser(request),
-        //     },
-        // }),
+        link: from([errorLink, graphqlLink]),
         // TODO: figure out why SchemaLink doesn't work
         // SchemaLink seems to not fetch any data, so we have to do it via network
-        link: new HttpLink({
-            uri: 'http://localhost:3000/api/graphql',
-            headers: {
-                cookie: request.headers.get('cookie') ?? '',
-            },
-        }),
+        // link: new HttpLink({
+        //     uri: 'http://localhost:3000/api/graphql',
+        //     headers: {
+        //         cookie: request.headers.get('cookie') ?? '',
+        //     },
+        // }),
     });
 
     const App = (
