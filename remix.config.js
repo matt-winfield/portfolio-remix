@@ -11,6 +11,7 @@ export default {
         'react-use',
         '@apollo/client',
         '@apollo/client/react/ssr',
+        '@apollo/client/link/error',
         '@apollo/client/utilities',
         'ts-invariant',
         '@wry/equality',
