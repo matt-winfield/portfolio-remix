@@ -14,4 +14,6 @@ node_modules
 
 /.github
 
+__generated__/
+
 package-lock.json

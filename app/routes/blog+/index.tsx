@@ -1,5 +1,9 @@
-import { useQuery } from '@apollo/client';
-import { type V2_MetaFunction } from '@remix-run/node';
+import {
+    type DataFunctionArgs,
+    json,
+    type V2_MetaFunction,
+} from '@remix-run/node';
+import { useLoaderData } from '@remix-run/react';
 import { DateTime } from 'luxon';
 import { useEffect, useRef, useState } from 'react';
 import { useIntersection } from 'react-use';
@@ -8,12 +12,22 @@ import { blogEnabled } from '#app/features/blog/blog-config.tsx';
 import { ArticleSummary } from '#app/features/blog/components/article-summary.tsx';
 import { startOfCareer } from '#app/features/experience/constants.ts';
 import { gql } from '#app/graphql/__generated__/gql.ts';
+import { loadQueries } from '#app/graphql/query-loader.server.ts';
+import { usePreloadedQuery } from '#app/graphql/query-loader.tsx';
 
-export const loader = async () => {
+export const loader = async ({ request }: DataFunctionArgs) => {
     if (!blogEnabled) {
         throw new Response('Not Found', { status: 404 });
     }
-    return null;
+
+    const graphql = await loadQueries(request, {
+        query: ARTICLES_QUERY,
+        variables: {
+            limit: 20,
+        },
+    });
+
+    return json({ graphql });
 };
 
 export const meta: V2_MetaFunction<typeof loader> = () => {
@@ -51,11 +65,16 @@ export default function Blog() {
         rootMargin: '100px', // Start fetching slightly before reaching end of screen
     });
 
-    const { data, fetchMore } = useQuery(ARTICLES_QUERY, {
-        variables: {
-            limit: 20,
+    const loaderData = useLoaderData<typeof loader>();
+    const { data, fetchMore } = usePreloadedQuery(
+        loaderData.graphql,
+        ARTICLES_QUERY,
+        {
+            variables: {
+                limit: 20,
+            },
         },
-    });
+    );
     const [loadingMore, setLoadingMore] = useState(false);
 
     const pageInfo = data?.viewer.articlesConnection?.pageInfo;

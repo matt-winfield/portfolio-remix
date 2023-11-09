@@ -1,21 +1,11 @@
 import { PassThrough } from 'stream';
-import {
-    ApolloClient,
-    ApolloProvider,
-    InMemoryCache,
-    from,
-} from '@apollo/client';
-import { onError } from '@apollo/client/link/error';
-import { getDataFromTree } from '@apollo/client/react/ssr';
+import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { Response, type HandleDocumentRequestFunction } from '@remix-run/node';
 import { RemixServer } from '@remix-run/react';
 import isbot from 'isbot';
 import { getInstanceInfo } from 'litefs-js';
 import { renderToPipeableStream } from 'react-dom/server';
-import { graphqlSchema } from '#app/graphql/graphql.server.ts';
-import { SchemaLink } from './graphql/schema-link.ts';
 import { typePolicies } from './graphql/type-policies.ts';
-import { getUser } from './utils/auth.server.ts';
 import { getEnv, init } from './utils/env.server.ts';
 import { NonceProvider } from './utils/nonce-provider.ts';
 import { makeTimings } from './utils/timing.server.ts';
@@ -51,28 +41,11 @@ export default async function handleRequest(...args: DocRequestArgs) {
 
     const nonce = String(loadContext.cspNonce) ?? undefined;
 
-    const graphqlLink = new SchemaLink({
-        schema: graphqlSchema,
-        context: {
-            user: await getUser(request),
-        },
-    });
-
-    const errorLink = onError(({ graphQLErrors, networkError }) => {
-        if (graphQLErrors) {
-            console.error('GraphQL Errors', graphQLErrors);
-        }
-        if (networkError) {
-            console.error('GraphQL Network Error', networkError);
-        }
-    });
-
     const apolloClient = new ApolloClient({
         ssrMode: true,
         cache: new InMemoryCache({
             typePolicies,
         }),
-        link: from([errorLink, graphqlLink]),
     });
 
     const App = (
@@ -89,47 +62,28 @@ export default async function handleRequest(...args: DocRequestArgs) {
         // and will not include suspended components and deferred loaders
         const timings = makeTimings('render', 'renderToPipeableStream');
 
-        try {
-            await getDataFromTree(App);
-        } catch (e) {
-            console.error('Error while getting Apollo data', e);
-        }
-        const apolloState = apolloClient.extract();
-
-        const { pipe, abort } = renderToPipeableStream(
-            <>
-                {App}
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `window.__APOLLO_STATE__=${JSON.stringify(
-                            apolloState,
-                        ).replace(/</g, '\\u003c')}`, // The replace call escapes the < character to prevent cross-site scripting attacks that are possible via the presence of </script> in a string literal
-                    }}
-                />
-            </>,
-            {
-                [callbackName]: () => {
-                    const body = new PassThrough();
-                    responseHeaders.set('Content-Type', 'text/html');
-                    responseHeaders.append('Server-Timing', timings.toString());
-                    resolve(
-                        new Response(body, {
-                            headers: responseHeaders,
-                            status: didError ? 500 : responseStatusCode,
-                        }),
-                    );
-                    pipe(body);
-                },
-                onShellError: (err: unknown) => {
-                    reject(err);
-                },
-                onError: (error: unknown) => {
-                    didError = true;
-
-                    console.error(error);
-                },
+        const { pipe, abort } = renderToPipeableStream(App, {
+            [callbackName]: () => {
+                const body = new PassThrough();
+                responseHeaders.set('Content-Type', 'text/html');
+                responseHeaders.append('Server-Timing', timings.toString());
+                resolve(
+                    new Response(body, {
+                        headers: responseHeaders,
+                        status: didError ? 500 : responseStatusCode,
+                    }),
+                );
+                pipe(body);
             },
-        );
+            onShellError: (err: unknown) => {
+                reject(err);
+            },
+            onError: (error: unknown) => {
+                didError = true;
+
+                console.error(error);
+            },
+        });
 
         setTimeout(abort, ABORT_DELAY);
     });

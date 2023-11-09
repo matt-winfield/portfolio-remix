@@ -15,7 +15,7 @@ const App = () => {
                 uri: '/api/graphql',
                 cache: new InMemoryCache({
                     typePolicies,
-                }).restore(window.__APOLLO_STATE__),
+                }),
             }),
         [],
     );
